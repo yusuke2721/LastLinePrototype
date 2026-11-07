@@ -42,6 +42,15 @@ namespace LastLine
 
     public static class CombatRules
     {
+        // Three waves scale with the round duration: 0/20/40 seconds for a 60s round.
+        public static float GetSpawnInterval(float elapsed, float duration,
+            float first, float middle, float last)
+        {
+            float interval = elapsed < duration / 3f ? first
+                : elapsed < duration * (2f / 3f) ? middle : last;
+            return Math.Max(0.05f, interval);
+        }
+
         // First contact with a circle in the horizontal plane, t in [0, 1].
         // Sweeping the whole frame segment prevents fast bullets skipping enemies.
         public static bool SegmentCircle(float ax, float az, float bx, float bz,

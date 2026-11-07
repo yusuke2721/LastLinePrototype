@@ -13,11 +13,11 @@
 - 敵100体・弾32発の事前生成プール。敵100体は上限であり、初期設定では同時に100体出現しません。
 - メニューからシーン生成、検証、Windowsビルド。
 
-初版は一定間隔の出現です。**時間経過による敵の増加、マズルフラッシュ、撃破エフェクト、効果音、UIの仕上げは、最小版の動作確認後に追加**します。射撃時の `On Shot` UnityEventは用意済みです。
+初版の動作確認後、敵の出現を3段階に増やす処理を追加しました（0〜20秒: 0.65秒間隔、20〜40秒: 0.3秒間隔、40〜60秒: 0.1秒間隔）。**マズルフラッシュ、撃破エフェクト、効果音、UIの仕上げは次の段階**です。射撃時の `On Shot` UnityEventは用意済みです。
 
 ## 最初にUnityで行う操作
 
-1. Unity HubでUnity 6のインストール済みバージョンを確認します。未インストールならUnity 6を追加し、Windows向けビルドに必要なモジュールも追加します。今回の環境ではEditor実行ファイル・既存プロジェクト・正確なバージョンを確認できませんでした。
+1. Unity HubでUnity 6のインストール済みバージョンを確認します。未インストールならUnity 6を追加し、Windows向けビルドに必要なモジュールも追加します。初版の動作確認時にUnity 6000.6.8f1を使用していることを確認しました。
 2. Hubの **New project** から **Universal 3D** または **3D (Built-In Render Pipeline)** の空プロジェクトを作成します。2D/HDRPは今回の対象外です。プロジェクト名の例は `LastLine`。
 3. リポジトリ直下の **`Assets/LastLine` フォルダー全体と `Assets/LastLine.meta`**を、作成したプロジェクトの `Assets` へコピーします。`Assets/Assets` にならないようにしてください。既存プロジェクトに入れる場合も同じです。
 4. Unityに戻り、右下のインポート・コンパイル完了を待ちます。Consoleに赤いエラーがないことを確認します。
@@ -41,7 +41,7 @@ New Input Systemだけが有効なプロジェクトでも利用できます。L
 
 これはパッケージ不要のスモークチェックで、Test Runnerのテスト一覧には出ません。敵の実際の移動・画面配置・入力・RETRYボタンのクリック・10発/秒の見た目はPlayして確認してください。HPを2にした場合の2発で撃破も確認してください。
 
-Unityに依存しない進行・命中判定は、PowerShell 7で次を実行すると、そのC#ソースを実際にコンパイルして25項目を検証できます。配布フォルダーをカレントディレクトリにして実行してください。PowerShell 7がない場合は、Unity内のチェックだけでも進められます。
+Unityに依存しない進行・命中判定は、PowerShell 7で次を実行すると、そのC#ソースを実際にコンパイルして36項目を検証できます。配布フォルダーをカレントディレクトリにして実行してください。PowerShell 7がない場合は、Unity内のチェックだけでも進められます。
 
 ```powershell
 pwsh -NoProfile -File .\tools\Verify-Rules.ps1
@@ -92,7 +92,10 @@ Playを**停止してから**変更し、Ctrl+Sで保存してください。Pla
 | GameRoot / GameController | Starting Lives | 10 |
 | 同上 | Round Seconds | 60、到達フレームではクリアを優先 |
 | Enemy Pool / EnemySpawner | Capacity | 100、初期化時のプール数 |
-| 同上 | Spawn Interval | 0.65秒、初版は一定 |
+| 同上 | Increase Over Time | ONで時間に応じて増加、OFFで一定間隔 |
+| 同上 | Spawn Interval | 序盤0.65秒 |
+| 同上 | Middle Spawn Interval | 中盤0.3秒 |
+| 同上 | Final Spawn Interval | 終盤0.1秒 |
 | 同上 | Spawn Half Width / Spawn Z | ±5.5 / 25 |
 | 同上 | Defense Z | 0（緑の線の見た目は別途移動が必要） |
 | Turret / MachineGun | Shots Per Second / Damage | 10 / 1 |
@@ -112,11 +115,11 @@ Playを停止し、生成シーンを開いた状態で **Last Line > Build Wind
 
 ## 今回の検証範囲と次の段階
 
-実施済みの結果は `docs/VALIDATION.md` と `docs/validation/rules.txt` に記録しています。Unity Editorでのコンパイル・Play・描画・Windowsビルド・Android端末・100体負荷はこの環境では未確認です。C#ルールの検証成功だけでUnity全体の動作確認済みとは扱っていません。
+実施済みの結果は `docs/VALIDATION.md` と `docs/validation/rules.txt` に記録しています。初版はユーザーがUnity上で1ゲーム遊べたことを確認済みです。敵増加を追加した版のUnity全体コンパイル・Play・難易度・Windowsビルド・Android端末・100体負荷は未確認です。C#ルールの検証成功だけでUnity全体の動作確認済みとは扱っていません。
 
 最小版で「照準が動く／撃破できる／突破で減る／終了と再試行ができる」を確認後、次の順で追加します。
 
-1. 0〜20秒・20〜40秒・40〜60秒の出現間隔を変え、終盤に群れを作る。負荷とライフのバランスを計測。
+1. 追加済みの3段階の出現間隔をPlayで確認し、負荷とライフのバランスを計測。
 2. マズルフラッシュ、短い撃破エフェクト、ヒットの視認性を追加。エフェクトもプール化。
 3. UIをCanvas/UI Toolkitへ移し、日本語表示、Androidのセーフエリア、タッチ位置の調整。
 4. Androidモジュール導入・実機入力・Profiler計測。100体上限時のフレーム時間とGCを確認して最適化。

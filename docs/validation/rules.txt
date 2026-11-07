@@ -23,4 +23,15 @@ PASS: Bullet starting inside target
 PASS: Moving away from target
 PASS: Horizontal sweep
 PASS: Contact fractions order nearest enemy first
-PASS: 25 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.
+PASS: First wave at round start
+PASS: First wave before 20 seconds
+PASS: Middle wave at 20 seconds
+PASS: Middle wave before 40 seconds
+PASS: Final wave at 40 seconds
+PASS: Final wave until end
+PASS: Wave boundaries scale with 90 second round
+PASS: Custom last-wave timing and interval
+PASS: Spawn interval has safe lower bound
+PASS: Late-round state selects final wave
+PASS: Retry returns to first wave
+PASS: 36 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.

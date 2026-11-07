@@ -32,7 +32,9 @@ namespace LastLine.Editor
             Check(state.IsVictory && state.Elapsed == 60 && state.Lives == 2, "Deadline clamps and freezes");
             Check(CombatRules.SegmentCircle(0, 0, 0, 40, 0, 20, 0.5f, out float t) && t > 0 && t < 1,
                 "Swept hit at high speed");
-            Debug.Log("Last Line Edit Mode checks: PASS (11 checks).");
+            Check(CombatRules.GetSpawnInterval(20, 60, 0.65f, 0.3f, 0.1f) == 0.3f, "Middle wave boundary");
+            Check(CombatRules.GetSpawnInterval(40, 60, 0.65f, 0.3f, 0.1f) == 0.1f, "Final wave boundary");
+            Debug.Log("Last Line Edit Mode checks: PASS (13 checks).");
         }
 
         [MenuItem("Last Line/Run Play Mode Checks", false, 11)]

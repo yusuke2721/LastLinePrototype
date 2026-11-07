@@ -64,6 +64,22 @@ namespace LastLine.Validation
             CombatRules.SegmentCircle(0, 0, 0, 20, 0, 5, 1, out near);
             CombatRules.SegmentCircle(0, 0, 0, 20, 0, 10, 1, out far);
             Check(near < far, "Contact fractions order nearest enemy first");
+            Check(CombatRules.GetSpawnInterval(0, 60, 0.65f, 0.3f, 0.1f) == 0.65f, "First wave at round start");
+            Check(CombatRules.GetSpawnInterval(19.999f, 60, 0.65f, 0.3f, 0.1f) == 0.65f, "First wave before 20 seconds");
+            Check(CombatRules.GetSpawnInterval(20, 60, 0.65f, 0.3f, 0.1f) == 0.3f, "Middle wave at 20 seconds");
+            Check(CombatRules.GetSpawnInterval(39.999f, 60, 0.65f, 0.3f, 0.1f) == 0.3f, "Middle wave before 40 seconds");
+            Check(CombatRules.GetSpawnInterval(40, 60, 0.65f, 0.3f, 0.1f) == 0.1f, "Final wave at 40 seconds");
+            Check(CombatRules.GetSpawnInterval(59.999f, 60, 0.65f, 0.3f, 0.1f) == 0.1f, "Final wave until end");
+            Check(CombatRules.GetSpawnInterval(29, 90, 1, 0.5f, 0.2f) == 1 &&
+                CombatRules.GetSpawnInterval(30, 90, 1, 0.5f, 0.2f) == 0.5f, "Wave boundaries scale with 90 second round");
+            Check(CombatRules.GetSpawnInterval(60, 90, 1, 0.5f, 0.2f) == 0.2f, "Custom last-wave timing and interval");
+            Check(CombatRules.GetSpawnInterval(0, 60, -1, 0, 0) == 0.05f, "Spawn interval has safe lower bound");
+            round = new RoundState(3, 60); round.Tick(45);
+            Check(CombatRules.GetSpawnInterval(round.Elapsed, round.Duration, 0.65f, 0.3f, 0.1f) == 0.1f,
+                "Late-round state selects final wave");
+            round = new RoundState(3, 60);
+            Check(CombatRules.GetSpawnInterval(round.Elapsed, round.Duration, 0.65f, 0.3f, 0.1f) == 0.65f,
+                "Retry returns to first wave");
             results.Add("PASS: " + results.Count + " assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.");
             return results.ToArray();
         }

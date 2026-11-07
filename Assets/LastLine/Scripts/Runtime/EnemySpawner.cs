@@ -6,13 +6,22 @@ namespace LastLine
     {
         public EnemyAgent prefab;
         [Range(1, 100)] public int capacity = 100;
+        [Header("Spawn rate: first / middle / last third of the round")]
+        public bool increaseOverTime = true;
         [Min(0.05f)] public float spawnInterval = 0.65f;
+        [Min(0.05f)] public float middleSpawnInterval = 0.3f;
+        [Min(0.05f)] public float finalSpawnInterval = 0.1f;
         [Min(0.1f)] public float spawnHalfWidth = 5.5f;
         public float spawnZ = 25;
         public float defenseZ = 0;
         private EnemyAgent[] pool;
         private GameController game;
         private float countdown;
+        public float CurrentSpawnInterval => game != null && game.State != null && increaseOverTime
+            ? CombatRules.GetSpawnInterval(game.State.Elapsed, game.State.Duration,
+                spawnInterval, middleSpawnInterval, finalSpawnInterval)
+            : Mathf.Max(0.05f, spawnInterval);
+
         public int ActiveCount
         {
             get
@@ -40,7 +49,9 @@ namespace LastLine
             if (game == null || !game.IsRunning) return;
             countdown -= Time.deltaTime;
             if (countdown > 0) return;
-            countdown = Mathf.Max(0.05f, spawnInterval);
+            // Carry frame overshoot to keep the rate accurate. At most one spawn per
+            // frame prevents a large catch-up burst after a stall or a full pool.
+            countdown = Mathf.Max(0, countdown + CurrentSpawnInterval);
             Spawn(new Vector3(Random.Range(-spawnHalfWidth, spawnHalfWidth), 1, spawnZ));
         }
 
