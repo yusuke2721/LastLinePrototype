@@ -87,6 +87,7 @@ namespace LastLine.Editor
             controller.enemies = spawner;
             controller.gun = turret;
             controller.hud = hud;
+            controller.effects = root.AddComponent<CombatEffects>();
 
             EditorSceneManager.SaveScene(scene, folder + "/LastLine.unity");
             AssetDatabase.SaveAssets();
@@ -125,7 +126,7 @@ namespace LastLine.Editor
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             var scene = EditorSceneManager.GetActiveScene();
-            if (Object.FindFirstObjectByType<GameController>() == null || string.IsNullOrEmpty(scene.path))
+            if (Object.FindAnyObjectByType<GameController>() == null || string.IsNullOrEmpty(scene.path))
                 throw new System.InvalidOperationException("Open the generated LastLine scene first.");
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             string output = EditorUtility.SaveFolderPanel("Windows build output", "", "LastLineBuild");

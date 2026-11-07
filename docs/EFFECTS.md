@@ -1,0 +1,44 @@
+# マズルフラッシュ・撃破演出
+
+敵の増加がUnity上で確認できたため、次の段階として2つの演出を追加しました。
+
+- 射撃すると銃口の黄色い形が一瞬表示されます。
+- 敵を撃破すると赤と黄色の6個の破片が飛び、約0.32秒で小さくなって消えます。
+
+画像・音声・外部アセットは使用しません。見た目はプリミティブです。光源を増やさず、影や衝突判定も付けません。効果音はまだ追加していません。
+
+## 既存シーンでの動作
+
+`Scripts`の更新だけで動作します。シーン・Prefabの再生成は不要です。既存シーンでCombatEffectsコンポーネントがない場合、Play開始時にGameRootへ自動追加し、銃口演出と撃破演出プールを準備します。
+
+1. Playを停止します。
+2. リポジトリの `Assets/LastLine/Scripts` を、Unityプロジェクトの `Assets/LastLine` へ上書きコピーします。新しい `CombatEffects.cs` と `.meta` も含めます。
+3. Unityへ戻り、コンパイル完了後にPlayします。
+4. 銃口が点滅すること、倒した敵の位置に破片が出ること、RETRYで残った演出が消えることを確認します。
+
+敵が防衛線を突破した場合や、HPがまだ残る場合は撃破演出を出しません。終了時には表示済みの演出だけが短時間で消え、新しい射撃・撃破演出は発生しません。
+
+## Inspectorで見た目を調整する
+
+Play中はGameRootのCombatEffectsで調整できますが、停止すると値は戻ります。保存したい場合は、Play停止中にGameRootを選び、**Add Component > Combat Effects** を追加してください。GameControllerのEffects欄が空でも、開始時に同じGameRootのコンポーネントを見つけます。シーンをCtrl+Sで保存します。
+
+| 項目 | 初期値 | 効果 |
+|---|---|---|
+| Muzzle Flash Enabled | ON | 銃口の点滅 |
+| Kill Bursts Enabled | ON | 撃破時の破片 |
+| Flash Seconds | 0.035 | 点滅する長さ（秒） |
+| Burst Capacity | 16 | 同時に使える撃破演出。Play開始時に確定 |
+| Burst Seconds | 0.32 | 破片が消えるまでの長さ（秒） |
+| Shard Size | 0.25 | 破片の初期サイズ |
+
+演出は開始時に事前生成して再利用します。プールが満杯なら演出だけを省略し、敵のダメージ・撃破・スコアは通常どおり処理します。RETRYでは使用中の演出をすべて非表示にします。
+
+## 検証
+
+Unity 6000.6.8f1の実プロジェクトと同じ参照設定を使い、RuntimeとEditorの独立コンパイルを確認しました。Unityの実行・表示テストとは別の検証です。`Run Play Mode Checks`には、演出プール初期化・銃口表示・二重撃破防止・プール上限・RETRYでの消去を追加しています。この自動Play検証と新しい演出の見た目は、Unityで確認してください。
+
+独立コンパイルはPowerShell 7で再現できます。Unityプロジェクトを一度開き、コンパイルを完了している必要があります。出力は一時フォルダーへ書き、UnityプロジェクトのDLLは上書きしません。Unityの内部コンパイル設定を使うため、Unityバージョンやプロジェクト構成が変わればスクリプトの調整が必要な場合があります。
+
+```powershell
+pwsh -NoProfile -File .\tools\Verify-UnityCompile.ps1 -ProjectPath "D:\UnityProjects\LastLine\LastLine" -EditorPath "C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor"
+```

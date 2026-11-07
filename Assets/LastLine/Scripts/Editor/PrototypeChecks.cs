@@ -15,7 +15,7 @@ namespace LastLine.Editor
         [MenuItem("Last Line/Run Edit Mode Checks", false, 10)]
         public static void EditChecks()
         {
-            var game = UnityEngine.Object.FindFirstObjectByType<GameController>();
+            var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             Check(game != null, "GameController exists");
             Check(game.enemies != null && game.enemies.prefab != null, "Enemy references");
             Check(game.gun != null && game.gun.bulletPrefab != null && game.gun.muzzle != null, "Weapon references");
@@ -59,7 +59,7 @@ namespace LastLine.Editor
                 return;
             }
             if (!EditorApplication.isPlaying || EditorApplication.isCompiling || EditorApplication.isPaused) return;
-            var game = UnityEngine.Object.FindFirstObjectByType<GameController>();
+            var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             if (game == null || game.State == null) return;
             SessionState.SetBool(Pending, false);
             try
@@ -67,6 +67,12 @@ namespace LastLine.Editor
                 game.enemies.enabled = false;
                 game.gun.enabled = false;
                 game.RestartRound();
+                var effects = game.effects;
+                Check(effects != null && effects.PoolSize > 0, "Effect pool initialized in existing scene");
+                effects.ShowMuzzleFlash();
+                Check(effects.IsFlashVisible, "Muzzle flash shown");
+                effects.Clear();
+                Check(!effects.IsFlashVisible && effects.ActiveBurstCount == 0, "Effects clear");
                 var enemies = game.enemies;
                 var first = enemies.Spawn(new Vector3(0, 1, 8));
                 Check(first != null && enemies.ActiveCount == 1, "Spawn from pool");
@@ -77,17 +83,23 @@ namespace LastLine.Editor
                 var rear = enemies.Spawn(new Vector3(0, 1, 12));
                 Check(first.Health == 2, "HP reset on reuse");
                 Check(enemies.TryHit(new Vector3(0, 1, 0), new Vector3(0, 1, 20), 0.1f, 1), "Swept hit");
-                Check(first.Health == 1 && rear.Health == rear.maxHealth && game.State.Score == 0, "Nearest hit only, no early score");
+                Check(first.Health == 1 && rear.Health == rear.maxHealth && game.State.Score == 0 && effects.ActiveBurstCount == 0, "Nearest hit only, no early score");
                 enemies.TryHit(new Vector3(0, 1, 0), new Vector3(0, 1, 20), 0.1f, 1);
+                Check(effects.ActiveBurstCount == 1, "One kill creates one burst");
                 int score = game.State.Score;
                 first.TakeDamage(999);
                 Check(!first.IsAlive && score == first.scoreValue && game.State.Score == score, "Kill scored once");
+                Check(effects.ActiveBurstCount == 1, "Duplicate damage does not create another burst");
+                for (int i = 1; i < effects.PoolSize; i++) Check(effects.PlayKill(Vector3.zero), "Burst pool slot " + i);
+                Check(!effects.PlayKill(Vector3.zero) && effects.ActiveBurstCount == effects.PoolSize, "Burst pool hard cap");
+                effects.ShowMuzzleFlash();
                 game.RestartRound();
                 for (int i = 0; i < enemies.capacity; i++) Check(enemies.Spawn(new Vector3(0, 1, 20)) != null, "Pool slot " + i);
                 Check(enemies.Spawn(Vector3.zero) == null && enemies.ActiveCount == enemies.capacity, "Pool hard cap");
                 for (int i = 0; i < game.startingLives + 2; i++) game.EnemyBreached();
                 Check(!game.IsRunning && game.State.Lives == 0 && !game.State.IsVictory, "Game over");
                 game.RestartRound();
+                Check(!effects.IsFlashVisible && effects.ActiveBurstCount == 0, "Retry clears all effects");
                 Check(enemies.ActiveCount == 0 && game.State.Score == 0 && game.State.Elapsed == 0 &&
                     game.State.Lives == game.startingLives && game.IsRunning, "Retry reset");
                 game.State.Tick(game.roundSeconds + 1);

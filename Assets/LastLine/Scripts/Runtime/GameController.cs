@@ -12,6 +12,7 @@ namespace LastLine
         public EnemySpawner enemies;
         public MachineGun gun;
         public GameHud hud;
+        public CombatEffects effects;
 
         public RoundState State { get; private set; }
         public bool IsRunning => State != null && State.IsRunning;
@@ -27,6 +28,11 @@ namespace LastLine
             enemies.Initialize(this);
             gun.Initialize(this, enemies);
             hud.Initialize(this);
+            // Existing scenes work immediately; new scenes serialize this component.
+            if (effects == null) effects = GetComponent<CombatEffects>();
+            if (effects == null) effects = gameObject.AddComponent<CombatEffects>();
+            effects.Initialize(gun.muzzle, gun.bulletPrefab.GetComponent<Renderer>().sharedMaterial,
+                enemies.prefab.GetComponent<Renderer>().sharedMaterial);
             RestartRound();
         }
 
@@ -38,12 +44,18 @@ namespace LastLine
 
         public void RestartRound()
         {
+            if (effects != null) effects.Clear();
             enemies.ResetPool();
             gun.ResetPool();
             State = new RoundState(Mathf.Max(1, startingLives), Mathf.Max(1, roundSeconds));
         }
 
-        public void EnemyKilled(int points) { State.AwardKill(points); }
+        public void EnemyKilled(int points, Vector3 position)
+        {
+            if (!IsRunning) return;
+            State.AwardKill(points);
+            effects.PlayKill(position);
+        }
         public void EnemyBreached() { State.Breach(); }
     }
 }

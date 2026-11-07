@@ -61,6 +61,7 @@ namespace LastLine
             {
                 if (bullet.IsFlying) continue;
                 bullet.Launch(game, enemies, muzzle.position, transform.forward, damage);
+                game.effects.ShowMuzzleFlash();
                 onShot.Invoke();
                 return;
             }

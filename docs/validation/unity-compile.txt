@@ -1,0 +1,2 @@
+PASS: Assembly-CSharp compiled against the Unity project references (10 LastLine files)
+PASS: Assembly-CSharp-Editor compiled against the Unity project references (2 LastLine files)

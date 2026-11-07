@@ -43,8 +43,7 @@ namespace LastLine
             if (!IsAlive || !game.IsRunning || damage <= 0) return;
             health -= damage;
             if (health > 0) return;
-            game.EnemyKilled(scoreValue);
-            // A small optional hit effect can be added here after the minimal build is checked.
+            game.EnemyKilled(scoreValue, transform.position);
             Despawn();
         }
 
