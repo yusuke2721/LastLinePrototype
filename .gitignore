@@ -1,0 +1,38 @@
+# Unity rebuildable/local directories (also applies to a future nested project).
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+[Bb]uild/
+[Bb]uilds/
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.opendb
+*.VC.db
+*.unitypackage
+*.apk
+*.aab
+*.exe
+*.app/
+*.log
+*.tmp
+sysinfo.txt
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+# Keep Assets, ALL .meta files, Packages and ProjectSettings in version control.
+# Generated Last Line scenes/prefabs/materials are intentional deliverables: keep them.

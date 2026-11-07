@@ -1,0 +1,26 @@
+PASS: Initial state
+PASS: Positive kill score only
+PASS: Breach costs one life
+PASS: Loss stops at zero lives
+PASS: Loss freezes score and clock
+PASS: Running before deadline
+PASS: Deadline clamps to 60 seconds
+PASS: Victory freezes changes
+PASS: Invalid time deltas ignored
+PASS: 60 FPS simulated round reaches victory
+PASS: Fresh round resets state
+PASS: Invalid lives rejected
+PASS: Invalid duration rejected
+PASS: High speed sweep finds first contact
+PASS: Lateral miss
+PASS: Tangent contact
+PASS: Segment endpoint contact
+PASS: Target beyond segment ignored
+PASS: Target behind segment ignored
+PASS: Stationary bullet inside target
+PASS: Stationary bullet outside target
+PASS: Bullet starting inside target
+PASS: Moving away from target
+PASS: Horizontal sweep
+PASS: Contact fractions order nearest enemy first
+PASS: 25 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.
