@@ -1,6 +1,6 @@
 # 知人配布用のAndroid APK
 
-2026-11-08に0.1.5のAPKを生成しました。保存先はリポジトリの `Builds/Android/LastLine-0.1.5-arm64.apk`（30,070,283バイト、約30MB）です。同じフォルダーにインストール方法、ビルド情報、SHA-256チェックサムを置いています。APKの署名（v2）とzipalign検証は成功しています。Android実機でのインストールとプレイは未確認です。
+2026-11-08に0.1.6のAPKを生成しました。保存先はリポジトリの `Builds/Android/LastLine-0.1.6-arm64.apk`（30,072,523バイト、約30MB）です。同じフォルダーにインストール方法、ビルド情報、SHA-256チェックサムを置いています。APKの署名（v2）とzipalign検証は成功しています。Android実機でのインストールとプレイは未確認です。
 
 Unity 6000.6.8f1にAndroid Build Support、Android SDK & NDK Tools、OpenJDKが必要です。Unity Hubのモジュール管理で追加できます。
 
@@ -12,9 +12,9 @@ Unity 6000.6.8f1にAndroid Build Support、Android SDK & NDK Tools、OpenJDKが�
 
 1. Unityで最新スクリプトのインポートを完了し、生成済みのLastLineシーンを開きます。
 2. Playを停止し、**Last Line > Build Android Test APK** を実行します。
-3. プロジェクト内の `Builds/Android/LastLine-0.1.5-arm64.apk` に出力します。結果の概要は同じフォルダーの `build-info.txt` に記録します。
+3. プロジェクト内の `Builds/Android/LastLine-0.1.6-arm64.apk` に出力します。結果の概要は同じフォルダーの `build-info.txt` に記録します。
 
-ビルドメニューはアプリ名をLAST LINE、パッケージ名を `com.yusuke2721.lastline`、バージョンを0.1.5（コード6）に設定します。Android 8.0以降のARM64端末向け、縦画面、IL2CPP、OpenGL ES 3、ETC2でビルドします。開いているシーンだけを含め、AABやOBBではなく単独APKを出力します。端末によって対応する描画機能や性能に差があります。
+ビルドメニューはアプリ名をLAST LINE、パッケージ名を `com.yusuke2721.lastline`、バージョンを0.1.6（コード7）に設定します。Android 8.0以降のARM64端末向け、縦画面、IL2CPP、OpenGL ES 3、ETC2でビルドします。開いているシーンだけを含め、AABやOBBではなく単独APKを出力します。端末によって対応する描画機能や性能に差があります。
 
 コマンドラインでは、同じプロジェクトを開いているUnity Editorを終了してから、`-batchmode -nographics -projectPath <Unityプロジェクト> -buildTarget Android -executeMethod LastLine.Editor.AndroidApkBuilder.BuildFromCommandLine -logFile <ログ保存先>` を利用できます。既存の `Assets/LastLine/Generated/Minimal/LastLine.unity` を使います。
 
