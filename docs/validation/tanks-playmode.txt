@@ -1,0 +1,14 @@
+LAST LINE - Soldier and tank validation (2026-11-08)
+Unity: 6000.6.8f1
+PASS: Independent Runtime and Editor compilation against Unity references.
+PASS: Syntax check, 13 C# files, three input configurations.
+PASS: 49 engine-independent CombatRules assertions (including exact 40-second wave boundary).
+PASS: Unity Editor menu: Last Line Edit Mode checks (13 checks).
+PASS: Unity Editor menu: Last Line Play Mode checks, including tank armor, nearest-hit blocking,
+      single kill score, pool reuse/HP reset, breach, combined capacity, first tank schedule,
+      retry schedule reset, existing bullet/effects/shooter/loss/victory checks.
+PASS: Visual check in normal Play: olive soldiers, tank, ARMOR 18/18 display.
+Editor returned to stopped Play and original panel layout; scene not saved.
+NOT RUN: Windows rebuild, Android device, 100-enemy rendering performance, difficulty balance.
+Batch attempt exited before tests because the same project was already open in Unity.
+The successful Edit/Play Mode checks were run through the existing Editor menu.

@@ -1,0 +1,16 @@
+LAST LINE - Incoming targets and drone bombing (2026-11-08)
+Unity 6000.6.8f1, existing project.
+PASS: 14 C# files syntax, three input configurations.
+PASS: Independent Runtime (12 files) / Editor (2 files) compilation.
+PASS: Unity Editor Edit Mode / Play Mode checks.
+PASS: Reward spawns at enemy depth, opposite player's side, keeps lane and advances.
+PASS: Old seven-second lifetime removed; reward expires at defense line.
+PASS: Reward hit ordering, upgrades, reinforcement fire and reset regression checks.
+PASS: Drone waits for enemies and prefers armor; approach does not damage enemies.
+PASS: Visible bomb drop and explosion; local splash kills armor and nearby infantry.
+PASS: Far enemy unaffected, score counted once, drone departure/effects cleanup.
+PASS: Retry cancels active drone, bomb and explosion.
+VISUAL: Normal Play showed incoming support target; slow preview showed quadcopter,
+        bomb drop, impact and departure. Preview stopped and panel layout restored.
+Saved scene retained 4 shots/second. No scene save during preview.
+NOT RUN: Windows rebuild, Android device, performance profiling, difficulty balance.

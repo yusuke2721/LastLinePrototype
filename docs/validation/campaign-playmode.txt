@@ -1,0 +1,15 @@
+LAST LINE - Campaign and grounded art validation (2026-11-08)
+Unity 6000.6.8f1, existing project.
+PASS: 55 engine-independent rule assertions (49 previous and 6 stage difficulty).
+PASS: 15 C# files syntax, three input configurations.
+PASS: Independent Runtime (13 files) / Editor (2 files) compile against Unity references.
+PASS: Unity Editor Edit Mode / Play Mode checks, including previous combat/support regressions.
+PASS: Title freezes combat, clear advances once, score banks once, next stage increases spawn pressure,
+      tank health and speed; squad/upgrades carry, defeat cannot advance, retry restores entry loadout.
+PASS: Return to title clears operation; new operation restores stage-one tuning.
+VISUAL: Runtime-only 3-second round: title -> deploy -> victory -> stage two.
+VISUAL: After final contour/letterbox correction: title grid/contours and black bars render correctly;
+        BEGIN OPERATION starts the normal 60-second round in the textured battlefield.
+Editor returned to stopped Play and normal panel layout. Runtime test settings not saved.
+NOT RUN: Windows rebuild, Android device, maximum-squad/shadow performance, all-stage balance.
+Art remains procedural primitive geometry; photorealistic model replacement is future work.

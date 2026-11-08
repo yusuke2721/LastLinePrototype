@@ -34,7 +34,7 @@ namespace LastLine
             float step = Mathf.Min(Time.deltaTime, remaining);
             Vector3 start = transform.position;
             Vector3 end = start + direction * (speed * step);
-            if (enemies.TryHit(start, end, radius, damage)) { Despawn(); return; }
+            if (game.TryHitShot(start, end, radius, damage)) { Despawn(); return; }
             transform.position = end;
             remaining -= step;
             if (remaining <= 0) Despawn();

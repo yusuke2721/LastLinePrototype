@@ -1,0 +1,14 @@
+LAST LINE - Support target validation (2026-11-08)
+Unity 6000.6.8f1, existing LastLine project.
+PASS: 14 C# files syntax, three input configurations.
+PASS: Independent Runtime (12 files) and Editor (2 files) compile with Unity references.
+PASS: Unity Editor Edit Mode checks (13 checks).
+PASS: Unity Editor Play Mode checks, including previous movement, bullets, tanks, pooling and effects.
+PASS: Nearest-hit ordering between enemies and reward targets; no shot penetration.
+PASS: Multiple hits before collection, single reward grant, reinforcement cap.
+PASS: Actual volleys contain two bullets with one ally and five bullets with a full squad.
+PASS: Weapon upgrades increase effective damage/rate and stop at the configured maximum level.
+PASS: Missile waits for enemies, prioritizes tanks, flies, applies local splash and scores kills once.
+PASS: Target expiry, reinforcement/weapon/missile rotation, no reward after round end.
+PASS: Retry resets allies, weapon strength, targets, missiles and bullet pool.
+NOT RUN: Windows rebuild, Android device, maximum-squad rendering performance, difficulty balance.

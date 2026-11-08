@@ -1,0 +1,13 @@
+LAST LINE - Squad halving on breach (2026-11-08)
+PASS: 62 pure C# assertions, including 7 squad-halving boundary/rounding checks.
+PASS: Syntax, 15 C# files, three input configurations.
+PASS: Unity 6000.6.8f1 reference Runtime/Editor compilation.
+PASS: Live Unity Editor Edit Mode and Play Mode checks.
+PASS: Infantry breach reduces five total soldiers to three; tank breach reduces three to two.
+PASS: Later breaches leave one controllable soldier, while lives still decrease.
+PASS: Duplicate Update on a despawned enemy cannot apply the penalty twice.
+PASS: Visible ally count and actual volley size match the reduced squad.
+PASS: Weapon level remains; reinforcements can rebuild the squad.
+PASS: Completed round ignores breaches; retry restores entry squad and clears warning.
+Applied source files verified by hash; Editor returned to stopped Play.
+NOT RUN: Difficulty playtest, Windows rebuild, Android device.

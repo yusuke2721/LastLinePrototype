@@ -56,6 +56,7 @@ namespace LastLine.Editor
 
             var enemyObject = Shape("Enemy", PrimitiveType.Capsule, null, Vector3.zero, Vector3.one, enemyMaterial);
             var enemy = enemyObject.AddComponent<EnemyAgent>();
+            enemy.BuildVisuals(enemyMaterial);
             enemyObject.SetActive(false);
             var enemyPrefab = PrefabUtility.SaveAsPrefabAsset(enemyObject, folder + "/Enemy.prefab").GetComponent<EnemyAgent>();
             Object.DestroyImmediate(enemyObject);
@@ -88,6 +89,8 @@ namespace LastLine.Editor
             controller.gun = gun;
             controller.hud = hud;
             controller.effects = root.AddComponent<CombatEffects>();
+            controller.support = root.AddComponent<SupportTargets>();
+            controller.presentation = root.AddComponent<BattlefieldPresentation>();
 
             EditorSceneManager.SaveScene(scene, folder + "/LastLine.unity");
             AssetDatabase.SaveAssets();

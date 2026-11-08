@@ -42,3 +42,8 @@ Unity 6000.6.8f1の実プロジェクトと同じ参照設定を使い、Runtime
 ```powershell
 pwsh -NoProfile -File .\tools\Verify-UnityCompile.ps1 -ProjectPath "D:\UnityProjects\LastLine\LastLine" -EditorPath "C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor"
 ```
+
+## 戦車の効果音（0.1.4）
+防衛線に最も早く着く戦車に合わせて履帯音が強くなります。装甲への着弾は短い金属音で知らせ、同時着弾の音は70ミリ秒単位でまとめます。音源は起動時に合成し、戦闘中は再利用します。
+
+タイトル下部の SOUND を押すと音量が25%ずつ切り替わります。100%の次は消音です。初期値は50%で、次回起動にも引き継ぎます。実機確認では、初戦の戦車が近づくときの音量、射撃時の金属音、消音で再起動した際に設定を維持することを確認してください。
