@@ -30,8 +30,8 @@ namespace LastLine
         private void Update()
         {
             if (!IsAlive || !game.IsRunning) return;
-            Vector3 target = new Vector3(game.gun.transform.position.x, transform.position.y, owner.defenseZ - 2);
-            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+            // Keep the spawn lane and height; the shooter does not affect enemy movement.
+            transform.position += Vector3.back * (moveSpeed * Time.deltaTime);
             if (transform.position.z <= owner.defenseZ)
             {
                 Despawn();

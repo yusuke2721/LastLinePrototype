@@ -58,7 +58,7 @@ namespace LastLine.Editor
                 EditorApplication.isPlaying = false;
                 return;
             }
-            if (!EditorApplication.isPlaying || EditorApplication.isCompiling || EditorApplication.isPaused) return;
+            if (!EditorApplication.isPlaying || EditorApplication.isCompiling || EditorApplication.isPaused || Time.deltaTime <= 0) return;
             var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             if (game == null || game.State == null) return;
             SessionState.SetBool(Pending, false);
@@ -81,6 +81,20 @@ namespace LastLine.Editor
                 effects.Clear();
                 Check(!effects.IsFlashVisible && effects.ActiveBurstCount == 0, "Effects clear");
                 var enemies = game.enemies;
+                var straight = enemies.Spawn(new Vector3(3, 1, 8));
+                game.gun.transform.position += Vector3.left * 3;
+                var before = straight.transform.position;
+                straight.SendMessage("Update");
+                Check(straight.transform.position.x == before.x && straight.transform.position.y == before.y &&
+                    straight.transform.position.z < before.z, "Enemy keeps spawn lane despite shooter movement");
+                straight.Despawn();
+                int livesBeforeBreach = game.State.Lives;
+                var breacher = enemies.Spawn(new Vector3(-2, 1, enemies.defenseZ - 0.1f));
+                breacher.SendMessage("Update");
+                Check(!breacher.IsAlive && game.State.Lives == livesBeforeBreach - 1, "Crossing line costs one life and returns enemy to pool");
+                breacher.SendMessage("Update");
+                Check(game.State.Lives == livesBeforeBreach - 1 && game.State.Score == 0, "Breach counted once and awards no score");
+                game.RestartRound();
                 var first = enemies.Spawn(new Vector3(0, 1, 8));
                 Check(first != null && enemies.ActiveCount == 1, "Spawn from pool");
                 // HP reset on pool reuse, and a high-speed hit through two enemies.
