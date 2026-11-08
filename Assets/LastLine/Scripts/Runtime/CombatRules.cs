@@ -2,6 +2,23 @@ using System;
 
 namespace LastLine
 {
+    // Relative to the scene's tuning; bounded escalation avoids overflow and impossible rates.
+    public readonly struct StageDifficulty
+    {
+        public readonly float SpawnPressure, InfantrySpeed, TankPressure, TankSpeed;
+        public readonly int InfantryArmor, TankArmor;
+        public StageDifficulty(int stage)
+        {
+            int step = Math.Max(1, Math.Min(15, stage)) - 1;
+            SpawnPressure = 1 + step * 0.12f;
+            InfantrySpeed = 1 + step * 0.06f;
+            TankPressure = 1 + step * 0.1f;
+            TankSpeed = 1 + step * 0.04f;
+            InfantryArmor = step / 3;
+            TankArmor = step * 4;
+        }
+    }
+
     // Engine-independent rules: these can be checked without starting Unity.
     public sealed class RoundState
     {
@@ -42,6 +59,13 @@ namespace LastLine
 
     public static class CombatRules
     {
+        // Round up the surviving half, always keeping the controllable soldier.
+        public static int SquadAfterBreach(int soldiers)
+        {
+            int count = Math.Max(1, soldiers);
+            return count / 2 + count % 2;
+        }
+
         public static float HorizontalTarget(float normalizedPointer, float halfWidth)
         {
             float width = Math.Max(0, halfWidth);
@@ -64,7 +88,7 @@ namespace LastLine
             float first, float middle, float last)
         {
             float interval = elapsed < duration / 3f ? first
-                : elapsed < duration * (2f / 3f) ? middle : last;
+                : elapsed < (duration / 3f) * 2f ? middle : last;
             return Math.Max(0.05f, interval);
         }
 

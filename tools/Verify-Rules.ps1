@@ -98,6 +98,28 @@ namespace LastLine.Validation
             for (int i = 0; i < 30; i++) x60 = CombatRules.StepHorizontal(x60, 5.5f, 8, 1f / 60, 5.5f);
             Check(System.Math.Abs(x30 - x60) < 0.0001f && System.Math.Abs(x60 - 4) < 0.0001f,
                 "Shooter movement is frame-rate independent");
+            var stage1 = new StageDifficulty(1);
+            var stage2 = new StageDifficulty(2);
+            var stage4 = new StageDifficulty(4);
+            Check(stage1.SpawnPressure == 1 && stage1.InfantrySpeed == 1 && stage1.TankArmor == 0 && stage1.InfantryArmor == 0,
+                "Stage one preserves scene tuning");
+            Check(stage2.SpawnPressure > stage1.SpawnPressure && stage2.InfantrySpeed > stage1.InfantrySpeed,
+                "Next stage increases infantry pressure and speed");
+            Check(stage2.TankPressure > 1 && stage2.TankSpeed > 1 && stage2.TankArmor == 4,
+                "Next stage strengthens and accelerates armor");
+            Check(stage4.InfantryArmor == 1 && stage4.TankArmor == 12, "Later stages increase infantry and tank durability");
+            Check(new StageDifficulty(0).SpawnPressure == 1 && new StageDifficulty(int.MinValue).SpawnPressure == 1,
+                "Invalid stage numbers clamp safely");
+            Check(new StageDifficulty(int.MaxValue).TankArmor == 56 && new StageDifficulty(999).SpawnPressure < 3,
+                "Difficulty escalation has bounded safe limits");
+            Check(CombatRules.SquadAfterBreach(5) == 3, "Five soldiers retain three after breach");
+            Check(CombatRules.SquadAfterBreach(4) == 2, "Four soldiers retain two after breach");
+            Check(CombatRules.SquadAfterBreach(3) == 2, "Odd squad halves round up");
+            Check(CombatRules.SquadAfterBreach(2) == 1, "Two soldiers retain the player");
+            Check(CombatRules.SquadAfterBreach(1) == 1, "Last soldier is never removed by halving");
+            Check(CombatRules.SquadAfterBreach(0) == 1 && CombatRules.SquadAfterBreach(-10) == 1,
+                "Invalid squad count keeps a controllable player");
+            Check(CombatRules.SquadAfterBreach(int.MaxValue) == 1073741824, "Halving cannot overflow");
             results.Add("PASS: " + results.Count + " assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.");
             return results.ToArray();
         }
