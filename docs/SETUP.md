@@ -5,7 +5,7 @@
 ## 今回の到達点
 
 - 左右に移動するマシンガン射手、斜め上からのカメラ、9:16の表示領域。
-- マウスの左右位置で射手がステップし、正面へ毎秒6発の自動射撃。無限弾数。
+- マウスの左右位置で射手がステップし、正面へ毎秒2発の自動射撃。無限弾数。
 - タッチ中の指の左右位置による射手の横移動。新旧のInput方式をコンパイル条件で切り替え。
 - Capsuleの敵、個別HP、前進、命中による撃破、スコア。
 - 防衛ライン突破でライフ減少、ライフ0で敗北、60秒生存でクリア。
@@ -39,7 +39,7 @@ New Input Systemだけが有効なプロジェクトでも利用できます。L
 - 撃破時の1回だけの加点、100体の上限。
 - ライフ0、RETRYの初期化、制限時間でのクリア。
 
-これはパッケージ不要のスモークチェックで、Test Runnerのテスト一覧には出ません。敵の実際の移動・画面配置・入力・RETRYボタンのクリック・6発/秒の見た目はPlayして確認してください。HPを2にした場合の2発で撃破も確認してください。
+これはパッケージ不要のスモークチェックで、Test Runnerのテスト一覧には出ません。敵の実際の移動・画面配置・入力・RETRYボタンのクリック・2発/秒の見た目はPlayして確認してください。HPを2にした場合の2発で撃破も確認してください。
 
 Unityに依存しない進行・命中判定は、PowerShell 7で次を実行すると、そのC#ソースを実際にコンパイルして49項目を検証できます。配布フォルダーをカレントディレクトリにして実行してください。PowerShell 7がない場合は、Unity内のチェックだけでも進められます。
 
@@ -58,7 +58,7 @@ Assets/LastLine/Scripts/
     GameController.cs    初期化・ラウンド進行・再試行
     EnemySpawner.cs      敵の事前生成・出現・最も近い敵への命中判定
     EnemyAgent.cs        HP・前進・突破・プールへの返却
-    MachineGun.cs        正面への6発/秒・弾プール・射撃イベント
+    MachineGun.cs        正面への2発/秒・弾プール・射撃イベント
     ShooterController.cs 左右移動・人型表示・ステップ動作・旧シーン互換
     Bullet.cs            弾の移動・寿命・経路による命中
     CombatEffects.cs     銃口の点滅とプール式の撃破演出
@@ -100,7 +100,7 @@ Playを**停止してから**変更し、Ctrl+Sで保存してください。Pla
 | 同上 | Final Spawn Interval | 終盤0.1秒 |
 | 同上 | Spawn Half Width / Spawn Z | ±5.5 / 25 |
 | 同上 | Defense Z | 0（緑の線の見た目は別途移動が必要） |
-| Shooter / MachineGun | Shots Per Second / Damage | 6 / 1 |
+| Shooter / MachineGun | Shots Per Second / Damage | 2 / 1 |
 | Shooter / ShooterController | Move Half Width | 中央から左右5.5 |
 | 同上 | Move Speed | 毎秒16、横移動の追従速度 |
 | 同上 | Pool Capacity | 32、発射速度×弾寿命+1以上を目安にする |
