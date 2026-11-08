@@ -164,8 +164,19 @@ namespace LastLine
             Fill(new Rect(38, 870, 464 * integrity, 8), accent);
             int segments = Mathf.Clamp(game.startingLives, 1, 20);
             for (int i = 1; i < segments; i++) Fill(new Rect(38 + 464f * i / segments, 870, 3, 8), Ink);
-            Label(new Rect(38, 895, 464, 25), state.IsRunning
-                ? "<   MOVE MOUSE / DRAG TO STEP   >" : "ROUND COMPLETE", centered, Muted);
+            Label(new Rect(38, 895, 464, 25), state.IsRunning ? ControlHint() : "ROUND COMPLETE", centered, Muted);
+        }
+
+        private string ControlHint()
+        {
+            var support = game.support;
+            if (game.CurrentStage != 1 || support.ClaimedSupportThisRound)
+                return "HOLD THE LINE UNTIL TIME RUNS OUT";
+            if (!support.TargetActive)
+                return "MOVE SIDEWAYS TO AIM / FIRE IS AUTOMATIC";
+            float offset = support.ActiveTarget.position.x - game.gun.muzzle.position.x;
+            if (Mathf.Abs(offset) <= 0.8f) return "HOLD THIS LANE TO CLAIM SUPPORT";
+            return offset < 0 ? "<   MOVE LEFT TO SHOOT SUPPORT" : "MOVE RIGHT TO SHOOT SUPPORT   >";
         }
 
         private void DrawResult(RoundState state)

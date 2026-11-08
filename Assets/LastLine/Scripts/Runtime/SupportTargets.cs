@@ -42,6 +42,7 @@ namespace LastLine
         public bool TargetActive => health > 0;
         public int TargetHealth => health;
         public SupportKind TargetKind { get; private set; }
+        public bool ClaimedSupportThisRound { get; private set; }
         public Transform ActiveTarget => TargetActive ? targets[(int)TargetKind] : null;
         public string Notice { get; private set; }
         public float NoticeUntil { get; private set; }
@@ -184,6 +185,7 @@ namespace LastLine
             if (health > 0) return;
             // Disable before granting the reward so simultaneous bullets cannot claim it twice.
             targets[(int)TargetKind].gameObject.SetActive(false);
+            ClaimedSupportThisRound = true;
             health = 0;
             switch (TargetKind)
             {
@@ -302,6 +304,7 @@ namespace LastLine
 
         public void ResetRound()
         {
+            ClaimedSupportThisRound = false;
             ClearTarget();
             foreach (var ally in allies) if (ally != null) ally.gameObject.SetActive(false);
             AllyCount = 0;

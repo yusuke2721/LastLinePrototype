@@ -267,10 +267,10 @@ namespace LastLine.Editor
             var behind = enemies.Spawn(new Vector3(0, 1, 8));
             for (int i = 0; i < support.targetHealth - 1; i++)
                 game.TryHitShot(new Vector3(0, 1, 0), new Vector3(0, 1, 20), 0.1f, 1);
-            Check(support.AllyCount == 0 && support.TargetHealth == 1, "Reward requires all target HP");
+            Check(!support.ClaimedSupportThisRound && support.AllyCount == 0 && support.TargetHealth == 1, "Reward requires all target HP");
             game.TryHitShot(new Vector3(0, 1, 0), new Vector3(0, 1, 20), 0.1f, 1);
             support.DamageTarget(999);
-            Check(support.AllyCount == 1 && !support.TargetActive && behind.Health == behind.maxHealth,
+            Check(support.ClaimedSupportThisRound && support.AllyCount == 1 && !support.TargetActive && behind.Health == behind.maxHealth,
                 "Reward granted once without piercing enemy behind target");
             game.gun.ResetPool();
             game.gun.SendMessage("Fire");
