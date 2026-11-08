@@ -1,0 +1,37 @@
+LAST LINE - Android APK validation (2026-11-08)
+Unity: 6000.6.8f1
+Build: succeeded, Unity exit code 0
+APK: LastLine-0.1.0-arm64.apk
+Bytes: 30002627
+SHA256: 97432107E9290289BBCDB1E7335BCF19BBDC353CF304F8B273282C52D881C64E
+Package: com.yusuke2721.lastline
+Version: 0.1.0 (code 1)
+Application label: LAST LINE
+Minimum SDK: 26 (Android 8.0)
+Target/compile SDK: 36
+ABI: arm64-v8a only
+Signing: local Android Debug RSA 2048-bit key
+apksigner verify: PASS, APK Signature Scheme v2
+Certificate SHA256: 82ba28f8e9a40dc439c125e9ea78ba4a3c73f50006b2a30dbb56bddb97aebc2e
+zipalign -c -P 16 4: PASS (exit code 0)
+Copy to repository Builds/Android: SHA256 matches source APK
+
+Initial Android Player compilation found Editor-only GUIStyleState.scaledBackgrounds usage.
+Removed that unused assignment and rebuilt successfully.
+Android base module installed using the signed official Unity installer after Hub elevation failed.
+SDK 36 / Build Tools 36, NDK r27c, OpenJDK 17 and CMake 3.22.1 use a local external-tools directory.
+Raw build logs remain in ignored Builds/Android, not in source control.
+NOT RUN: Android device installation, gameplay, graphics, performance, touch usability.
+
+0.1.1 startup correction (2026-11-08)
+Build: succeeded, Unity exit code 0
+APK: LastLine-0.1.1-arm64.apk
+Bytes: 30014891
+SHA256: FF3A7CDC5CCCA83D682A96DAD5D09ECE38D57759333941FB3188DBA78BDF6833
+Version: 0.1.1 (code 2)
+Native component registration: PASS MeshFilter, MeshRenderer, BoxCollider, SphereCollider, CapsuleCollider.
+Old 0.1.0 native registration: SphereCollider and CapsuleCollider absent.
+apksigner verify: PASS v2, same certificate as 0.1.0.
+zipalign -c -P 16 4: PASS.
+ABI: arm64-v8a; min SDK 26; target SDK 36; same package identifier.
+NOT RUN: corrected APK installation, touch input and gameplay on Android device (adb devices list empty).
