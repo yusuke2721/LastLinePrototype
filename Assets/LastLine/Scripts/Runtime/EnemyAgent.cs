@@ -22,6 +22,8 @@ namespace LastLine
         private float stride;
         private bool isTank;
         private Transform tankBody;
+        private Transform[] trackDust;
+        private float dustTravel;
         private float armorHitUntil;
         private int armorBonus;
         private float speedScale = 1;
@@ -61,7 +63,7 @@ namespace LastLine
                 Part("Magazine Pouch", PrimitiveType.Cube, visualRoot, new Vector3(i * 0.13f, -0.02f, 0.32f), new Vector3(0.15f, 0.2f, 0.1f), uniform);
         }
 
-        public void BuildTank(Material armor, Material tracks, int hp, float speed, float radius, int points)
+        public void BuildTank(Material armor, Material tracks, int hp, float speed, float radius, int points, Material dust = null)
         {
             isTank = true;
             maxHealth = Mathf.Max(2, hp);
@@ -74,6 +76,18 @@ namespace LastLine
             var tank = new GameObject("Tank Visuals").transform;
             tank.SetParent(transform, false);
             tankBody = tank;
+            if (dust != null)
+            {
+                trackDust = new Transform[4];
+                for (int i = 0; i < trackDust.Length; i++)
+                {
+                    var puff = Part("Track Dust " + i, PrimitiveType.Sphere, transform, Vector3.zero, Vector3.zero, dust);
+                    var renderer = puff.GetComponent<Renderer>();
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    trackDust[i] = puff;
+                }
+            }
             Part("Hull", PrimitiveType.Cube, tank, new Vector3(0, -0.33f, 0),
                 new Vector3(1.7f, 0.55f, 2.2f), armor);
             Part("Left Track", PrimitiveType.Cube, tank, new Vector3(-0.88f, -0.63f, 0),
@@ -102,6 +116,8 @@ namespace LastLine
             health = MaxHealth;
             transform.position = position;
             armorHitUntil = 0;
+            dustTravel = 0;
+            if (trackDust != null) foreach (var puff in trackDust) puff.localScale = Vector3.zero;
             if (tankBody != null) tankBody.localRotation = Quaternion.identity;
             ResetPose();
 
@@ -120,6 +136,7 @@ namespace LastLine
                 stride += distance * 6;
                 float recoil = Mathf.Clamp01((armorHitUntil - Time.time) / 0.18f);
                 tankBody.localRotation = Quaternion.Euler(-4f * recoil, 0, Mathf.Sin(stride) * 1.2f);
+                UpdateTrackDust(distance);
             }
             if (visualRoot != null && !isTank)
             {
@@ -135,6 +152,24 @@ namespace LastLine
             {
                 Despawn();
                 game.EnemyBreached();
+            }
+        }
+
+        private void UpdateTrackDust(float distance)
+        {
+            if (trackDust == null) return;
+            const float trailLength = 1.8f;
+            dustTravel += distance;
+            for (int i = 0; i < trackDust.Length; i++)
+            {
+                float travel = dustTravel - i * trailLength / trackDust.Length;
+                if (travel < 0) continue;
+                float age = Mathf.Repeat(travel / trailLength, 1f);
+                float side = i % 2 == 0 ? -1f : 1f;
+                var puff = trackDust[i];
+                puff.localPosition = new Vector3(side * (0.88f + age * 0.22f), -0.88f + age * 0.38f,
+                    1.05f + age * trailLength);
+                puff.localScale = new Vector3(0.64f, 0.36f, 0.78f) * Mathf.Sin(Mathf.PI * age);
             }
         }
 

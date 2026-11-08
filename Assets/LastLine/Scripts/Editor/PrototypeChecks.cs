@@ -432,7 +432,10 @@ namespace LastLine.Editor
             Check(tank.Health == game.enemies.tankHealth + 4 && tank.MaxHealth == tank.Health,
                 "Higher stage tank has increased actual armor");
             var before = tank.transform.position;
+            var dust = tank.transform.Find("Track Dust 0");
+            Check(dust != null && dust.localScale == Vector3.zero, "Tank starts with a clear dust trail");
             tank.SendMessage("Update");
+            Check(dust.localScale.x > 0 && dust.localPosition.z > 1, "Moving tracks leave dust behind the hull");
             Check(before.z - tank.transform.position.z > game.enemies.tankSpeed * Time.deltaTime,
                 "Higher stage tank moves faster");
             game.NextStage();

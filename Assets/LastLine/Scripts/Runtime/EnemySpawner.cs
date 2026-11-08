@@ -25,7 +25,7 @@ namespace LastLine
         [Min(1)] public int tankScore = 100;
         private EnemyAgent[] pool;
         private EnemyAgent[] tankPool;
-        private Material uniform, skin, equipment, armor;
+        private Material uniform, skin, equipment, armor, trackDust;
         private GameController game;
         private float countdown;
         private float nextTankAt;
@@ -68,6 +68,7 @@ namespace LastLine
             skin = ColoredMaterial(original, "Soldier / Skin", new Color(0.72f, 0.55f, 0.4f));
             equipment = ColoredMaterial(original, "Equipment / Charcoal", new Color(0.12f, 0.15f, 0.12f));
             armor = ColoredMaterial(original, "Tank / Stage Armor", StagePalette.ForStage(1).Armor);
+            trackDust = ColoredMaterial(original, "Tank / Dust", new Color(0.56f, 0.48f, 0.36f));
             pool = new EnemyAgent[Mathf.Clamp(capacity, 1, 100)];
             for (int i = 0; i < pool.Length; i++)
             {
@@ -81,7 +82,7 @@ namespace LastLine
             {
                 tankPool[i] = Instantiate(prefab, transform);
                 tankPool[i].name = "Tank " + i;
-                tankPool[i].BuildTank(armor, equipment, tankHealth, tankSpeed, tankHitRadius, tankScore);
+                tankPool[i].BuildTank(armor, equipment, tankHealth, tankSpeed, tankHitRadius, tankScore, trackDust);
                 tankPool[i].Despawn();
             }
             nextTankAt = Mathf.Max(0, firstTankSeconds);
@@ -225,6 +226,7 @@ namespace LastLine
             if (skin != null) Destroy(skin);
             if (equipment != null) Destroy(equipment);
             if (armor != null) Destroy(armor);
+            if (trackDust != null) Destroy(trackDust);
         }
     }
 }
