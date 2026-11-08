@@ -10,7 +10,7 @@ namespace LastLine
         [Tooltip("Camera used by ShooterController to map pointer position to a movement lane.")]
         public Camera aimCamera;
         [Min(1)] public int poolCapacity = 32;
-        [Min(0.1f)] public float shotsPerSecond = 10;
+        [Min(0.1f)] public float shotsPerSecond = 6;
         [Min(1)] public int damage = 1;
 
         [Tooltip("Optional: assign AudioSource.Play or another response in the Inspector.")]
