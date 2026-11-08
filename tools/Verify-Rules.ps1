@@ -80,6 +80,24 @@ namespace LastLine.Validation
             round = new RoundState(3, 60);
             Check(CombatRules.GetSpawnInterval(round.Elapsed, round.Duration, 0.65f, 0.3f, 0.1f) == 0.65f,
                 "Retry returns to first wave");
+            Check(CombatRules.HorizontalTarget(0.5f, 5.5f) == 0, "Pointer center maps to center lane");
+            Check(CombatRules.HorizontalTarget(0, 5.5f) == -5.5f, "Left edge maps to left lane");
+            Check(CombatRules.HorizontalTarget(1, 5.5f) == 5.5f, "Right edge maps to right lane");
+            Check(CombatRules.HorizontalTarget(-1, 5.5f) == -5.5f && CombatRules.HorizontalTarget(2, 5.5f) == 5.5f,
+                "Pointer target clamped to movement bounds");
+            Check(CombatRules.StepHorizontal(0, 5.5f, 16, 0.1f, 5.5f) == 1.6f, "Shooter moves at configured speed");
+            Check(CombatRules.StepHorizontal(0, 5.5f, 16, 1, 5.5f) == 5.5f, "Shooter cannot overshoot destination");
+            Check(CombatRules.StepHorizontal(0, -99, 16, 1, 5.5f) == -5.5f, "Shooter cannot leave left boundary");
+            Check(CombatRules.StepHorizontal(0, 99, 16, 1, 5.5f) == 5.5f, "Shooter cannot leave right boundary");
+            Check(CombatRules.StepHorizontal(3, -5.5f, 16, 0.1f, 5.5f) == 1.4f, "Shooter reverses direction");
+            Check(CombatRules.StepHorizontal(2, 5, 16, 0, 5.5f) == 2, "Zero delta does not move shooter");
+            Check(CombatRules.StepHorizontal(2, 5, 0, 1, 5.5f) == 2, "Zero speed does not move shooter");
+            Check(CombatRules.StepHorizontal(3, 5, 16, 1, 0) == 0, "Zero movement width locks to center");
+            float x30 = 0, x60 = 0;
+            for (int i = 0; i < 15; i++) x30 = CombatRules.StepHorizontal(x30, 5.5f, 8, 1f / 30, 5.5f);
+            for (int i = 0; i < 30; i++) x60 = CombatRules.StepHorizontal(x60, 5.5f, 8, 1f / 60, 5.5f);
+            Check(System.Math.Abs(x30 - x60) < 0.0001f && System.Math.Abs(x60 - 4) < 0.0001f,
+                "Shooter movement is frame-rate independent");
             results.Add("PASS: " + results.Count + " assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.");
             return results.ToArray();
         }

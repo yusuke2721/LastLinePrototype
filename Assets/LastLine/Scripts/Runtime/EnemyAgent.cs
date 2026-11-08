@@ -12,7 +12,7 @@ namespace LastLine
         private EnemySpawner owner;
         private GameController game;
         private int health;
-        private Vector3 target;
+
         public bool IsAlive { get; private set; }
         public int Health => health;
 
@@ -22,7 +22,7 @@ namespace LastLine
             game = controller;
             health = Mathf.Max(1, maxHealth);
             transform.position = position;
-            target = new Vector3(position.x * 0.35f, position.y, owner.defenseZ - 2);
+
             IsAlive = true;
             gameObject.SetActive(true);
         }
@@ -30,6 +30,7 @@ namespace LastLine
         private void Update()
         {
             if (!IsAlive || !game.IsRunning) return;
+            Vector3 target = new Vector3(game.gun.transform.position.x, transform.position.y, owner.defenseZ - 2);
             transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
             if (transform.position.z <= owner.defenseZ)
             {

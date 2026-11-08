@@ -22,7 +22,7 @@ namespace LastLine.Editor
             Check(game.gun.aimCamera != null && game.hud != null && game.hud.gameCamera != null, "Camera/UI references");
             Check(game.enemies.capacity >= 1 && game.enemies.capacity <= 100, "Enemy cap 1..100");
             Check(game.enemies.spawnZ > game.enemies.defenseZ, "Enemies spawn beyond line");
-            Check(game.gun.muzzle.position.z < game.enemies.defenseZ, "Turret behind line");
+            Check(game.gun.muzzle.position.z < game.enemies.defenseZ, "Shooter behind line");
             Check(game.gun.poolCapacity >= Mathf.CeilToInt(game.gun.shotsPerSecond * game.gun.bulletPrefab.lifetime) + 1,
                 "Bullet pool covers firing rate and lifetime");
             var state = new RoundState(2, 60);
@@ -67,6 +67,13 @@ namespace LastLine.Editor
                 game.enemies.enabled = false;
                 game.gun.enabled = false;
                 game.RestartRound();
+                Check(game.shooter != null, "Moving shooter initialized in existing scene");
+                Check(game.gun.transform.Find("Shooter Visuals") != null, "Shooter character visuals created");
+                Check(Vector3.Dot(game.gun.transform.forward, Vector3.forward) > 0.999f, "Weapon faces forward");
+                var resetPosition = game.gun.transform.position;
+                game.gun.transform.position += Vector3.right * 3;
+                game.RestartRound();
+                Check(Vector3.Distance(game.gun.transform.position, resetPosition) < 0.001f, "Retry returns shooter to starting lane");
                 var effects = game.effects;
                 Check(effects != null && effects.PoolSize > 0, "Effect pool initialized in existing scene");
                 effects.ShowMuzzleFlash();

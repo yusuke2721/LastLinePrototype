@@ -31,7 +31,7 @@ namespace LastLine
             GUI.Label(new Rect(20, 18, 500, 56), "LAST LINE", heading);
             GUI.Label(new Rect(20, 78, 500, 44),
                 $"SCORE {state.Score}    LIFE {state.Lives}    {state.Elapsed:00.0}s", body);
-            GUI.Label(new Rect(20, 868, 500, 48), "MOVE MOUSE / DRAG TO AIM", body);
+            GUI.Label(new Rect(20, 868, 500, 48), "MOVE MOUSE / DRAG TO STEP", body);
             if (!state.IsRunning)
             {
                 GUI.color = new Color(1, 1, 1, 0.97f);

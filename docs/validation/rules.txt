@@ -34,4 +34,17 @@ PASS: Custom last-wave timing and interval
 PASS: Spawn interval has safe lower bound
 PASS: Late-round state selects final wave
 PASS: Retry returns to first wave
-PASS: 36 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.
+PASS: Pointer center maps to center lane
+PASS: Left edge maps to left lane
+PASS: Right edge maps to right lane
+PASS: Pointer target clamped to movement bounds
+PASS: Shooter moves at configured speed
+PASS: Shooter cannot overshoot destination
+PASS: Shooter cannot leave left boundary
+PASS: Shooter cannot leave right boundary
+PASS: Shooter reverses direction
+PASS: Zero delta does not move shooter
+PASS: Zero speed does not move shooter
+PASS: Zero movement width locks to center
+PASS: Shooter movement is frame-rate independent
+PASS: 49 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.

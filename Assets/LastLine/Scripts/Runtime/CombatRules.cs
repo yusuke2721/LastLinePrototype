@@ -42,6 +42,23 @@ namespace LastLine
 
     public static class CombatRules
     {
+        public static float HorizontalTarget(float normalizedPointer, float halfWidth)
+        {
+            float width = Math.Max(0, halfWidth);
+            float normalized = Math.Max(0, Math.Min(1, normalizedPointer));
+            return (normalized * 2 - 1) * width;
+        }
+
+        public static float StepHorizontal(float current, float target, float speed, float delta, float halfWidth)
+        {
+            float width = Math.Max(0, halfWidth);
+            current = Math.Max(-width, Math.Min(width, current));
+            target = Math.Max(-width, Math.Min(width, target));
+            float difference = target - current;
+            float distance = Math.Max(0, speed) * Math.Max(0, delta);
+            return current + Math.Sign(difference) * Math.Min(distance, Math.Abs(difference));
+        }
+
         // Three waves scale with the round duration: 0/20/40 seconds for a 60s round.
         public static float GetSpawnInterval(float elapsed, float duration,
             float first, float middle, float last)

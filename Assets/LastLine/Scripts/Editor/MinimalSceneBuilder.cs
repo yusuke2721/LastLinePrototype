@@ -22,7 +22,7 @@ namespace LastLine.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             var ground = Material(folder, "Ground", new Color(0.08f, 0.14f, 0.19f));
-            var cyan = Material(folder, "Turret", new Color(0.08f, 0.75f, 0.85f));
+            var cyan = Material(folder, "Uniform", new Color(0.08f, 0.75f, 0.85f));
             var enemyMaterial = Material(folder, "Enemy", new Color(0.94f, 0.3f, 0.18f));
             var bulletMaterial = Material(folder, "Bullet", new Color(1f, 0.9f, 0.35f));
             var lineMaterial = Material(folder, "DefenseLine", new Color(0.22f, 0.95f, 0.55f));
@@ -70,22 +70,22 @@ namespace LastLine.Editor
             var spawner = new GameObject("Enemy Pool").AddComponent<EnemySpawner>();
             spawner.transform.SetParent(root.transform, false);
             spawner.prefab = enemyPrefab;
-            var turret = new GameObject("Turret").AddComponent<MachineGun>();
-            turret.transform.SetParent(root.transform, false);
-            turret.transform.position = new Vector3(0, 1, -2);
-            Shape("Base", PrimitiveType.Cylinder, turret.transform, new Vector3(0, -0.5f, 0), new Vector3(1.8f, 0.4f, 1.8f), cyan);
-            Shape("Body", PrimitiveType.Cube, turret.transform, Vector3.zero, new Vector3(0.85f, 0.65f, 1), cyan);
-            Shape("Barrel", PrimitiveType.Cube, turret.transform, new Vector3(0, 0, 0.8f), new Vector3(0.25f, 0.25f, 1), bulletMaterial);
+            var gun = new GameObject("Shooter").AddComponent<MachineGun>();
+            gun.transform.SetParent(root.transform, false);
+            gun.transform.position = new Vector3(0, 1, -2);
+            var shooter = gun.gameObject.AddComponent<ShooterController>();
+            shooter.BuildVisuals(cyan, bulletMaterial);
+            controller.shooter = shooter;
             var muzzle = new GameObject("Muzzle").transform;
-            muzzle.SetParent(turret.transform, false);
+            muzzle.SetParent(gun.transform, false);
             muzzle.localPosition = new Vector3(0, 0, 1.4f);
-            turret.muzzle = muzzle;
-            turret.aimCamera = camera;
-            turret.bulletPrefab = bulletPrefab;
+            gun.muzzle = muzzle;
+            gun.aimCamera = camera;
+            gun.bulletPrefab = bulletPrefab;
             var hud = root.AddComponent<GameHud>();
             hud.gameCamera = camera;
             controller.enemies = spawner;
-            controller.gun = turret;
+            controller.gun = gun;
             controller.hud = hud;
             controller.effects = root.AddComponent<CombatEffects>();
 

@@ -4,9 +4,9 @@
 
 ## 今回の到達点
 
-- 固定砲台、斜め上からのカメラ、9:16の表示領域。
-- マウスの左右位置で照準、毎秒10発の自動射撃、無限弾数。
-- タッチ中の指の左右位置による照準。新旧のInput方式をコンパイル条件で切り替え。
+- 左右に移動するマシンガン射手、斜め上からのカメラ、9:16の表示領域。
+- マウスの左右位置で射手がステップし、正面へ毎秒10発の自動射撃。無限弾数。
+- タッチ中の指の左右位置による射手の横移動。新旧のInput方式をコンパイル条件で切り替え。
 - Capsuleの敵、個別HP、前進、命中による撃破、スコア。
 - 防衛ライン突破でライフ減少、ライフ0で敗北、60秒生存でクリア。
 - スコア・ライフ・経過時間、結果表示、RETRY。
@@ -25,10 +25,10 @@
 6. `Assets/LastLine/Generated/Minimal/LastLine.unity` が生成されて開きます。再生成時は `Minimal 1` など別フォルダーを作るので、前の設定は残ります。
 7. **Game** タブのアスペクト比メニューで **+** を選び、Typeを **Aspect Ratio**、Widthを **9**、Heightを **16**、Labelを `Portrait 9:16` にして追加・選択します。Gameタブがなければ **Window > General > Game** を開きます。実行時もカメラが9:16の領域を保ちます。
 8. **Last Line > Run Edit Mode Checks** を実行し、Consoleの `PASS` を確認します。
-9. **Play** を押し、Game画面内でマウスを左右に動かします。クリックしなくても射撃します。敵の進路に向けてください。緑の線を敵が越えるとライフが減ります。
+9. **Play** を押し、Game画面内でマウスを左右に動かします。クリックしなくても射撃します。敵の列の正面へ移動してください。緑の線を敵が越えるとライフが減ります。
 10. ゲームオーバーまたはクリア後に **RETRY** をクリックし、ライフ・スコア・時間・敵・弾がリセットされることを確認します。終了時はもう一度Playを押します。
 
-New Input Systemだけが有効なプロジェクトでも利用できます。Legacyを有効にするために設定変更する必要はありません。照準が反応しない場合は、Gameタブをクリックしてフォーカスし、**Edit > Project Settings > Player > Other Settings > Active Input Handling** がNew / Old / Bothのいずれかになっているか確認してください。NewはInput Systemパッケージが必要です。
+New Input Systemだけが有効なプロジェクトでも利用できます。Legacyを有効にするために設定変更する必要はありません。横移動が反応しない場合は、Gameタブをクリックしてフォーカスし、**Edit > Project Settings > Player > Other Settings > Active Input Handling** がNew / Old / Bothのいずれかになっているか確認してください。NewはInput Systemパッケージが必要です。
 
 ## 自動検証と手動で見る項目
 
@@ -41,7 +41,7 @@ New Input Systemだけが有効なプロジェクトでも利用できます。L
 
 これはパッケージ不要のスモークチェックで、Test Runnerのテスト一覧には出ません。敵の実際の移動・画面配置・入力・RETRYボタンのクリック・10発/秒の見た目はPlayして確認してください。HPを2にした場合の2発で撃破も確認してください。
 
-Unityに依存しない進行・命中判定は、PowerShell 7で次を実行すると、そのC#ソースを実際にコンパイルして36項目を検証できます。配布フォルダーをカレントディレクトリにして実行してください。PowerShell 7がない場合は、Unity内のチェックだけでも進められます。
+Unityに依存しない進行・命中判定は、PowerShell 7で次を実行すると、そのC#ソースを実際にコンパイルして49項目を検証できます。配布フォルダーをカレントディレクトリにして実行してください。PowerShell 7がない場合は、Unity内のチェックだけでも進められます。
 
 ```powershell
 pwsh -NoProfile -File .\tools\Verify-Rules.ps1
@@ -58,7 +58,8 @@ Assets/LastLine/Scripts/
     GameController.cs    初期化・ラウンド進行・再試行
     EnemySpawner.cs      敵の事前生成・出現・最も近い敵への命中判定
     EnemyAgent.cs        HP・前進・突破・プールへの返却
-    MachineGun.cs        照準・10発/秒・弾プール・射撃イベント
+    MachineGun.cs        正面への10発/秒・弾プール・射撃イベント
+    ShooterController.cs 左右移動・人型表示・ステップ動作・旧シーン互換
     Bullet.cs            弾の移動・寿命・経路による命中
     CombatEffects.cs     銃口の点滅とプール式の撃破演出
     PointerAim.cs        マウス/タッチ入力の取得
@@ -78,7 +79,7 @@ Sun          [Directional Light]
 Battlefield  [床 / 防衛線 / 両側の目印]
 GameRoot     [GameController / GameHud]
   Enemy Pool [EnemySpawner / 実行時に敵100体]
-  Turret     [MachineGun / Base / Body / Barrel / Muzzle]
+  Shooter    [MachineGun / ShooterController / Shooter Visuals / Muzzle]
   Bullet Pool [実行時に弾32発]
 ```
 
@@ -99,8 +100,9 @@ Playを**停止してから**変更し、Ctrl+Sで保存してください。Pla
 | 同上 | Final Spawn Interval | 終盤0.1秒 |
 | 同上 | Spawn Half Width / Spawn Z | ±5.5 / 25 |
 | 同上 | Defense Z | 0（緑の線の見た目は別途移動が必要） |
-| Turret / MachineGun | Shots Per Second / Damage | 10 / 1 |
-| 同上 | Max Aim Degrees | 左右25度 |
+| Shooter / MachineGun | Shots Per Second / Damage | 10 / 1 |
+| Shooter / ShooterController | Move Half Width | 中央から左右5.5 |
+| 同上 | Move Speed | 毎秒16、横移動の追従速度 |
 | 同上 | Pool Capacity | 32、発射速度×弾寿命+1以上を目安にする |
 | 生成フォルダーのEnemy.prefab | Max Health / Move Speed | 1 / 2.3 |
 | 同上 | Hit Radius / Score Value | 0.5 / 10 |
@@ -118,13 +120,13 @@ Playを停止し、生成シーンを開いた状態で **Last Line > Build Wind
 
 実施済みの結果は `docs/VALIDATION.md` と `docs/validation/rules.txt` に記録しています。初版はユーザーがUnity上で1ゲーム遊べたことを確認済みです。敵の増加もユーザーがPlayして確認済みです。演出追加版はUnity 6000.6.8f1参照でRuntime/Editorの独立コンパイルが成功しています。演出追加版のPlay・見た目・難易度・Windowsビルド・Android端末・100体負荷は未確認です。C#ルールの検証成功だけでUnity全体の動作確認済みとは扱っていません。
 
-最小版で「照準が動く／撃破できる／突破で減る／終了と再試行ができる」を確認後、次の順で追加します。
+最小版で「射手が左右へ動く／撃破できる／突破で減る／終了と再試行ができる」を確認後、次の順で追加します。
 
 1. 追加済みの3段階の出現間隔をPlayで確認し、負荷とライフのバランスを計測。
 2. 追加済みのマズルフラッシュとプール式撃破エフェクトをPlayで確認し、見た目を調整。
 3. UIをCanvas/UI Toolkitへ移し、日本語表示、Androidのセーフエリア、タッチ位置の調整。
 4. Androidモジュール導入・実機入力・Profiler計測。100体上限時のフレーム時間とGCを確認して最適化。
 
-音は後からAudioSourceをTurretに追加し、クリップを割り当て、MachineGunの **On Shot > +** にAudioSourceを指定して **AudioSource.Play()** を選ぶ形で追加できます。現在の版には音声素材は含みません。
+音は後からAudioSourceを射手（旧シーンではTurret）に追加し、クリップを割り当て、MachineGunの **On Shot > +** にAudioSourceを指定して **AudioSource.Play()** を選ぶ形で追加できます。現在の版には音声素材は含みません。
 
 参考にした公式API: [Unity 6 BuildPipeline.BuildPlayer](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityeditor/buildpipeline/buildplayer)、[Unity Input System 新旧API対応表](https://github.com/Unity-Technologies/InputSystem/blob/develop/Packages/com.unity.inputsystem/Documentation~/corresponding-old-new-api.md)。既存ゲームのコード・画像・キャラクターや外部アセットは使用していません。

@@ -7,11 +7,12 @@ namespace LastLine
     {
         public Transform muzzle;
         public Bullet bulletPrefab;
+        [Tooltip("Camera used by ShooterController to map pointer position to a movement lane.")]
         public Camera aimCamera;
         [Min(1)] public int poolCapacity = 32;
         [Min(0.1f)] public float shotsPerSecond = 10;
         [Min(1)] public int damage = 1;
-        [Range(1, 60)] public float maxAimDegrees = 25;
+
         [Tooltip("Optional: assign AudioSource.Play or another response in the Inspector.")]
         public UnityEvent onShot = new UnityEvent();
         private Bullet[] pool;
@@ -24,7 +25,7 @@ namespace LastLine
             game = controller;
             enemies = spawner;
             pool = new Bullet[Mathf.Clamp(poolCapacity, 1, 256)];
-            // Pool under a separate object: bullets must not rotate with the turret.
+            // Bullets stay independent of the moving shooter after firing.
             var root = new GameObject("Bullet Pool");
             root.transform.SetParent(controller.transform, false);
             for (int i = 0; i < pool.Length; i++)
@@ -38,11 +39,7 @@ namespace LastLine
         private void Update()
         {
             if (game == null || !game.IsRunning) return;
-            if (PointerAim.TryGetPosition(out Vector2 pointer) && aimCamera.pixelRect.Contains(pointer))
-            {
-                float x = Mathf.InverseLerp(aimCamera.pixelRect.xMin, aimCamera.pixelRect.xMax, pointer.x);
-                transform.rotation = Quaternion.Euler(0, Mathf.Lerp(-maxAimDegrees, maxAimDegrees, x), 0);
-            }
+
             cooldown -= Time.deltaTime;
             // Bounded catch-up preserves 10 Hz at typical frame rates, without a stall burst.
             int fired = 0;
@@ -60,7 +57,7 @@ namespace LastLine
             foreach (var bullet in pool)
             {
                 if (bullet.IsFlying) continue;
-                bullet.Launch(game, enemies, muzzle.position, transform.forward, damage);
+                bullet.Launch(game, enemies, muzzle.position, Vector3.forward, damage);
                 game.effects.ShowMuzzleFlash();
                 onShot.Invoke();
                 return;

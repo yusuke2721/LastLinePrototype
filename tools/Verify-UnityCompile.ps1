@@ -12,6 +12,7 @@ $dotnet=Join-Path $editor 'Data\DotNetSdk\dotnet.exe'
 $compiler=Get-ChildItem -LiteralPath (Join-Path $editor 'Data\DotNetSdk\sdk') -Recurse -Filter 'csc.dll' |
     Where-Object {$_.FullName -like '*\Roslyn\bincore\csc.dll'} | Sort-Object FullName -Descending | Select-Object -First 1
 $artifact=Get-ChildItem -LiteralPath (Join-Path $project 'Library\Bee\artifacts') -Recurse -Filter 'Assembly-CSharp.rsp' |
+    Where-Object {Test-Path -LiteralPath (Join-Path $_.DirectoryName 'Assembly-CSharp-Editor.rsp')} |
     Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
 if(-not $compiler -or -not $artifact -or -not (Test-Path -LiteralPath $dotnet)){throw 'Open and compile the Unity project once; Unity DotNetSdk and Bee response files are required.'}
 Push-Location $project
