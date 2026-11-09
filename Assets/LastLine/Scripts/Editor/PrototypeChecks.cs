@@ -402,6 +402,8 @@ namespace LastLine.Editor
             Check(game.CurrentStage == 1, "Cannot skip an unfinished stage");
             GrantSupport(game.support, SupportKind.Reinforcements);
             GrantSupport(game.support, SupportKind.Weapon);
+            game.support.RestoreLoadout(4, 4);
+            Check(game.gun.EffectiveDamage == game.gun.damage + 2 && Mathf.Approximately(game.gun.EffectiveFireRate, game.gun.shotsPerSecond * 1.3f), "Peak weapon output is bounded");
             game.State.AwardKill(35);
             game.State.Tick(game.State.Duration - 0.001f);
             const string key = "lastline.campaign.v1";
@@ -411,10 +413,10 @@ namespace LastLine.Editor
                 game.SendMessage("Update");
                 Check(game.SavedStage == 2 && PlayerPrefs.HasKey(key), "Victory saves before leaving the results screen");
                 game.NextStage();
-                Check(game.CurrentStage == 2 && game.CompletedScore == 35, "Deploy banks the cleared sector once");
+                Check(game.CurrentStage == 2 && game.CompletedScore == 35 && game.support.AllyCount == 2 && game.support.WeaponLevel == 2, "Deploy banks the cleared sector once");
                 game.ReturnToTitle();
                 game.ResumeCampaign();
-                Check(game.CurrentStage == 2 && game.CompletedScore == 35 && game.support.AllyCount == 1 &&
+                Check(game.CurrentStage == 2 && game.CompletedScore == 35 && game.support.AllyCount == 2 &&
                     game.support.WeaponLevel == 2 && game.State.Elapsed == 0, "Continue restores the next sector and loadout");
             }
             finally
@@ -426,7 +428,7 @@ namespace LastLine.Editor
                 "Clear advances to a fresh higher stage");
             Check(game.CompletedScore == 35 && game.CampaignScore == 35 && game.State.Score == 0,
                 "Advance banks stage score once");
-            Check(game.support.AllyCount == 1 && game.support.WeaponLevel == 2, "Advance carries squad and weapon upgrades");
+            Check(game.support.AllyCount == 2 && game.support.WeaponLevel == 2, "Advance carries squad and weapon upgrades");
             Check(game.enemies.CurrentSpawnInterval < originalInterval, "Higher stage increases actual spawn pressure");
             var tank = game.enemies.SpawnTank(new Vector3(0, 1, 12));
             Check(tank.Health == game.enemies.tankHealth + 4 && tank.MaxHealth == tank.Health,
@@ -447,7 +449,7 @@ namespace LastLine.Editor
             Check(game.CurrentStage == 2 && !game.IsRunning, "Defeat cannot advance");
             game.RestartRound();
             Check(game.CurrentStage == 2 && game.CompletedScore == 35 && game.State.Score == 0 &&
-                game.support.AllyCount == 1 && game.support.WeaponLevel == 2 && game.enemies.ActiveCount == 0,
+                game.support.AllyCount == 2 && game.support.WeaponLevel == 2 && game.enemies.ActiveCount == 0,
                 "Retry restores this stage's entry loadout and clears combat");
             game.ReturnToTitle();
             Check(game.IsTitle && !game.IsRunning && game.CurrentStage == 1 && game.CampaignScore == 0 &&

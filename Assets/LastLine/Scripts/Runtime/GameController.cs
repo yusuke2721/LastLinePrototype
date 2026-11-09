@@ -33,6 +33,9 @@ namespace LastLine
             public int stage, score, allies, weapon;
         }
         private Checkpoint saved;
+        private const int CarryAllies = 2, CarryWeapon = 2;
+        public int NextAllies => Mathf.Min(CarryAllies, support.AllyCount);
+        public int NextWeapon => Mathf.Min(CarryWeapon, support.WeaponLevel);
         public int SavedStage => saved == null ? 0 : saved.stage;
 
         private void Start()
@@ -91,7 +94,7 @@ namespace LastLine
             if (State.IsVictory)
             {
                 saved = new Checkpoint { stage = Mathf.Min(999, CurrentStage + 1), score = CampaignScore,
-                    allies = support.AllyCount, weapon = support.WeaponLevel };
+                    allies = NextAllies, weapon = NextWeapon };
                 PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(saved));
                 PlayerPrefs.Save();
             }
@@ -102,8 +105,8 @@ namespace LastLine
             if (!IsTitle || saved == null) return;
             CurrentStage = saved.stage;
             CompletedScore = saved.score;
-            checkpointAllies = saved.allies;
-            checkpointWeapon = saved.weapon;
+            checkpointAllies = Mathf.Min(CarryAllies, saved.allies);
+            checkpointWeapon = Mathf.Min(CarryWeapon, saved.weapon);
             RestartRound();
         }
 
@@ -139,8 +142,8 @@ namespace LastLine
         {
             if (IsTitle || State == null || !State.IsVictory) return;
             CompletedScore += State.Score;
-            checkpointAllies = support.AllyCount;
-            checkpointWeapon = support.WeaponLevel;
+            checkpointAllies = NextAllies;
+            checkpointWeapon = NextWeapon;
             CurrentStage = Mathf.Min(999, CurrentStage + 1);
             RestartRound();
         }

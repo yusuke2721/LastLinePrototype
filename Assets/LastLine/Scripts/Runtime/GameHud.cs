@@ -194,7 +194,7 @@ namespace LastLine
             Label(new Rect(288, 456, 180, 18), "OPERATION TOTAL", centered, Muted);
             Label(new Rect(72, 482, 180, 42), state.Score.ToString("D5"), resultNumber, White);
             Label(new Rect(288, 482, 180, 42), game.CampaignScore.ToString("D5"), resultNumber, White);
-            Label(new Rect(64, 541, 412, 26), state.IsVictory ? "SQUAD AND WEAPON UPGRADES CARRY FORWARD"
+            Label(new Rect(64, 541, 412, 26), state.IsVictory ? $"NEXT SECTOR / SQUAD {game.NextAllies + 1} / WEAPON LV.{game.NextWeapon}"
                 : $"TIME HELD / {state.Elapsed:0.0} SECONDS", centered, Muted);
             if (Action(new Rect(72, 589, 396, 64), state.IsVictory ? $"DEPLOY TO STAGE {game.CurrentStage + 1:00}   >" : "RETRY SECTOR   >", true))
             {

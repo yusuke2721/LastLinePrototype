@@ -19,8 +19,8 @@ namespace LastLine
         private GameController game;
         private EnemySpawner enemies;
         private float cooldown;
-        public float EffectiveFireRate => shotsPerSecond * (1 + 0.25f * ((game != null && game.support != null ? game.support.WeaponLevel : 1) - 1));
-        public int EffectiveDamage => damage + (game != null && game.support != null ? game.support.WeaponLevel - 1 : 0);
+        public float EffectiveFireRate => shotsPerSecond * (1 + 0.1f * ((game != null && game.support != null ? game.support.WeaponLevel : 1) - 1));
+        public int EffectiveDamage => damage + (game != null && game.support != null ? game.support.WeaponLevel / 2 : 0);
         public int ActiveBulletCount
         {
             get
@@ -35,7 +35,7 @@ namespace LastLine
         {
             game = controller;
             enemies = spawner;
-            int supportCapacity = Mathf.CeilToInt(shotsPerSecond * 1.75f * (SupportTargets.MaxAllies + 1) * bulletPrefab.lifetime) + 5;
+            int supportCapacity = Mathf.CeilToInt(shotsPerSecond * 1.3f * (SupportTargets.MaxAllies + 1) * bulletPrefab.lifetime) + 5;
             pool = new Bullet[Mathf.Clamp(Mathf.Max(poolCapacity, supportCapacity), 1, 256)];
             // Bullets stay independent of the moving shooter after firing.
             var root = new GameObject("Bullet Pool");
