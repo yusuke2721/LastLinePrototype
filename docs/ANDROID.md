@@ -1,6 +1,6 @@
 # 知人配布用のAndroid APK
 
-2026-11-08に0.1.6のAPKを生成しました。保存先はリポジトリの `Builds/Android/LastLine-0.1.6-arm64.apk`（30,072,523バイト、約30MB）です。同じフォルダーにインストール方法、ビルド情報、SHA-256チェックサムを置いています。APKの署名（v2）とzipalign検証は成功しています。Android実機でのインストールとプレイは未確認です。
+2026-11-09に0.1.7のAPKを生成しました。保存先はリポジトリの `Builds/Android/LastLine-0.1.7-arm64.apk`（30,072,895バイト、約30MB）です。同じフォルダーにインストール方法、ビルド情報、SHA-256チェックサムを置いています。APKの署名（v2）とzipalign検証は成功しています。Android実機でのインストールとプレイは未確認です。
 
 Unity 6000.6.8f1にAndroid Build Support、Android SDK & NDK Tools、OpenJDKが必要です。Unity Hubのモジュール管理で追加できます。
 
@@ -12,9 +12,9 @@ Unity 6000.6.8f1にAndroid Build Support、Android SDK & NDK Tools、OpenJDKが�
 
 1. Unityで最新スクリプトのインポートを完了し、生成済みのLastLineシーンを開きます。
 2. Playを停止し、**Last Line > Build Android Test APK** を実行します。
-3. プロジェクト内の `Builds/Android/LastLine-0.1.6-arm64.apk` に出力します。結果の概要は同じフォルダーの `build-info.txt` に記録します。
+3. プロジェクト内の `Builds/Android/LastLine-0.1.7-arm64.apk` に出力します。結果の概要は同じフォルダーの `build-info.txt` に記録します。
 
-ビルドメニューはアプリ名をLAST LINE、パッケージ名を `com.yusuke2721.lastline`、バージョンを0.1.6（コード7）に設定します。Android 8.0以降のARM64端末向け、縦画面、IL2CPP、OpenGL ES 3、ETC2でビルドします。開いているシーンだけを含め、AABやOBBではなく単独APKを出力します。端末によって対応する描画機能や性能に差があります。
+ビルドメニューはアプリ名をLAST LINE、パッケージ名を `com.yusuke2721.lastline`、バージョンを0.1.7（コード8）に設定します。Android 8.0以降のARM64端末向け、縦画面、IL2CPP、OpenGL ES 3、ETC2でビルドします。開いているシーンだけを含め、AABやOBBではなく単独APKを出力します。端末によって対応する描画機能や性能に差があります。
 
 コマンドラインでは、同じプロジェクトを開いているUnity Editorを終了してから、`-batchmode -nographics -projectPath <Unityプロジェクト> -buildTarget Android -executeMethod LastLine.Editor.AndroidApkBuilder.BuildFromCommandLine -logFile <ログ保存先>` を利用できます。既存の `Assets/LastLine/Generated/Minimal/LastLine.unity` を使います。
 
@@ -46,3 +46,7 @@ HUDを先に接続し、初期化例外をログと画面に表示します。�
 ## 0.1.2 戦車の表示確認
 
 初戦で戦車の頭上に防衛線到達までの秒数（LINE）が表示され、残り5秒で赤になること、命中すると装甲表示が白く光ることを確認します。0.1.1と署名証明書が一致し、v2署名と16KB zipalign検証が成功しました。ADBの接続一覧は空で、実機更新・プレイは未確認です。
+
+## 0.1.7 バランス調整の検証
+
+UnityのEdit Mode・Play Mode検証が成功しました。5人・武器Lv.4でクリアし、次面への進行、タイトルからの再開、敗北後の再試行で3人・Lv.2になることを確認しました。APKのv2署名と16KBアラインメントを検証済みです。ADBに接続された端末がなく、実機の難易度は未確認です。
