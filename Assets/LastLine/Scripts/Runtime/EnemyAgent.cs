@@ -61,6 +61,7 @@ namespace LastLine
                 new Vector3(0.07f, 0.25f, 0.07f), equipment).localRotation = Quaternion.Euler(90, 0, 0);
             for (int i = -1; i <= 1; i += 2)
                 Part("Magazine Pouch", PrimitiveType.Cube, visualRoot, new Vector3(i * 0.13f, -0.02f, 0.32f), new Vector3(0.15f, 0.2f, 0.1f), uniform);
+            BattlefieldPresentation.FitSoldier(visualRoot, uniform, equipment, true);
         }
 
         public void BuildTank(Material armor, Material tracks, int hp, float speed, float radius, int points, Material dust = null)

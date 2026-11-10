@@ -150,6 +150,9 @@ namespace LastLine.Editor
                 Check(!effects.IsFlashVisible && effects.ActiveBurstCount == 0, "Effects clear");
                 var enemies = game.enemies;
                 var straight = enemies.Spawn(new Vector3(3, 1, 8));
+                Check(straight.transform.Find("Enemy Visuals/Glove") != null &&
+                    game.gun.transform.Find("Shooter Visuals/Glove") != null &&
+                    game.transform.Find("Support Pool/Ally 1/Glove") != null, "Infantry, shooter and reinforcements use the two-handed rifle pose");
                 game.gun.transform.position += Vector3.left * 3;
                 var before = straight.transform.position;
                 straight.SendMessage("Update");

@@ -101,6 +101,7 @@ namespace LastLine
             Shape("Helmet", PrimitiveType.Sphere, soldier, new Vector3(0, 0.79f, 0), new Vector3(0.49f, 0.27f, 0.49f), friendly);
             Shape("Body Armor", PrimitiveType.Cube, soldier, new Vector3(0, 0.08f, 0.25f), new Vector3(0.48f, 0.5f, 0.12f), steel);
             Shape("Pack", PrimitiveType.Cube, soldier, new Vector3(0, 0.05f, -0.28f), new Vector3(0.46f, 0.5f, 0.23f), friendly);
+            FitSoldier(soldier, friendly, steel, false);
 
             sun = GameObject.Find("Sun")?.GetComponent<Light>();
             if (sun != null)
@@ -183,6 +184,47 @@ namespace LastLine
             if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", 0.12f);
             materials.Add(material);
             return material;
+        }
+
+        // Both armies use the same shoulder, elbow and grip positions in model space (+Z forward).
+        internal static void FitSoldier(Transform soldier, Material cloth, Material kit, bool infantry)
+        {
+            var head = soldier.Find("Head");
+            head.localScale = new Vector3(0.32f, 0.41f, 0.35f);
+            head.localPosition = new Vector3(0.035f, 0.6f, 0.04f);
+            var helmet = soldier.Find("Helmet");
+            helmet.localPosition = head.localPosition + new Vector3(0, 0.13f, -0.015f);
+            helmet.localScale = new Vector3(0.405f, 0.235f, 0.43f);
+            var gun = soldier.Find(infantry ? "Rifle" : "Machine Gun");
+            gun.localPosition = new Vector3(0.15f, 0.22f, 0.4f);
+            gun.localScale = new Vector3(0.11f, 0.14f, 0.78f);
+            var barrel = infantry ? soldier.Find("Barrel") :
+                Shape("Barrel", PrimitiveType.Cylinder, soldier, Vector3.zero, Vector3.one, kit);
+            barrel.localPosition = new Vector3(0.15f, 0.245f, 0.89f);
+            barrel.localScale = new Vector3(0.055f, 0.16f, 0.055f);
+            barrel.localRotation = Quaternion.Euler(90, 0, 0);
+            if (infantry)
+                soldier.Find("Goggles").localPosition = head.localPosition + new Vector3(0, 0.045f, 0.16f);
+            for (int side = -1; side <= 1; side += 2)
+            {
+                var arm = soldier.Find(side < 0 ? "Left Arm" : "Right Arm");
+                var sleeve = infantry ? arm.Find("Mesh") : arm;
+                sleeve.GetComponent<Renderer>().enabled = false;
+                var shoulder = new Vector3(side * 0.28f, 0.34f, 0);
+                var elbow = new Vector3(side * 0.39f, 0.015f, side < 0 ? 0.24f : 0.03f);
+                var grip = new Vector3(side < 0 ? 0.12f : 0.16f, 0.19f, side < 0 ? 0.58f : 0.24f);
+                Sleeve(soldier, shoulder, elbow, 0.205f, cloth);
+                Sleeve(soldier, elbow, grip, 0.155f, cloth);
+                Shape("Glove", PrimitiveType.Sphere, soldier, grip, new Vector3(0.135f, 0.12f, 0.17f), kit);
+            }
+        }
+
+        private static void Sleeve(Transform parent, Vector3 start, Vector3 end, float width, Material cloth)
+        {
+            Vector3 span = end - start;
+            var sleeve = Shape("Sleeve", PrimitiveType.Sphere, parent, (start + end) * 0.5f,
+                new Vector3(width, span.magnitude + width * 0.45f, width), cloth);
+            sleeve.localRotation = Quaternion.FromToRotation(Vector3.up, span);
         }
 
         private static Transform Shape(string name, PrimitiveType type, Transform parent, Vector3 position, Vector3 scale, Material material)
