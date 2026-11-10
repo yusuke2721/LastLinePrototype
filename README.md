@@ -14,7 +14,7 @@ Unity 6 / C#で作る、9:16の3D防衛シューティングの最小プロト�
 
 純C#の62テスト、全16ファイルの3入力条件の構文検査、Unity 6000.6.8f1参照のRuntime/Editor独立コンパイル、実EditorのEdit/Play Modeチェックが成功しています。タイトル→出撃→クリア→ステージ2の操作も確認済みです。現在のWindows再ビルド・Android実機・最大編成の性能測定・全ステージの難易度調整は未実施です。
 
-知人配布用のAndroid APK（0.1.2、約30MB）を `Builds/Android/LastLine-0.1.7-arm64.apk` に生成しました。Android 8.0以降のARM64端末向けで、テスト用署名とパッケージ整合性を確認済みです。APKはGit管理対象外です。[配布と再ビルド](docs/ANDROID.md) を参照してください。
+知人配布用のAndroid APK（0.1.2、約30MB）を `Builds/Android/LastLine-0.1.8-arm64.apk` に生成しました。Android 8.0以降のARM64端末向けで、テスト用署名とパッケージ整合性を確認済みです。APKはGit管理対象外です。[配布と再ビルド](docs/ANDROID.md) を参照してください。
 
 UIをダークネイビーとシアンのHUDへ刷新しました。残り時間・進行バー・耐久ゲージ・勝敗別の結果画面を表示します。既存シーンの再生成は不要です。[UIの変更と反映手順](docs/UI.md) を参照してください。
 
