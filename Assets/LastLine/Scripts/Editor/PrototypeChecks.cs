@@ -197,11 +197,11 @@ namespace LastLine.Editor
                 Check(!tank.IsAlive, "No tank before first tank deadline");
                 game.State.Tick(0.2f);
                 enemies.SendMessage("Update");
-                Check(tank.IsAlive, "Scheduled tank appears at first deadline");
+                Check(!tank.IsAlive, "Opening sector keeps armor locked at the tank deadline");
                 enemies.SendMessage("Update");
                 int activeTanks = 0;
                 foreach (var heavy in enemies.Tanks) if (heavy.IsAlive) activeTanks++;
-                Check(activeTanks == 1, "Tank schedule does not spawn every frame");
+                Check(activeTanks == 0, "Opening sector stays infantry-only");
                 game.RestartRound();
                 enemies.SendMessage("Update");
                 Check(!tank.IsAlive, "Retry resets tank schedule");
@@ -239,6 +239,7 @@ namespace LastLine.Editor
                 game.State.Tick(game.roundSeconds + 1);
                 Check(game.State.IsVictory && !game.IsRunning, "60 second survival");
                 CheckCampaign(game);
+                CheckSectorWaves(game);
                 passed = true;
                 Debug.Log("Last Line Play Mode checks: PASS. Exiting Play Mode.");
             }
@@ -342,7 +343,7 @@ namespace LastLine.Editor
             support.DamageTarget(999);
             game.State.Tick(support.targetInterval + 0.1f);
             support.SendMessage("Update");
-            Check(support.TargetKind == SupportKind.Drone, "Reward schedule includes drone target");
+            Check(support.TargetKind == SupportKind.Reinforcements, "Opening sector cycles ground support only");
             game.State.Tick(game.roundSeconds + 1);
             support.DamageTarget(999);
             Check(support.QueuedDrones == 0, "Round end prevents reward collection");
@@ -463,6 +464,32 @@ namespace LastLine.Editor
                 game.enemies.CurrentSpawnInterval == originalInterval, "New operation restores stage one difficulty");
             Check(game.presentation != null && game.transform.Find("Field Environment/Textured Terrain") != null,
                 "Grounded battlefield generated for existing scene");
+        }
+
+        private static void CheckSectorWaves(GameController game)
+        {
+            game.StartCampaign();
+            for (int sector = 1; sector <= 6; sector++)
+            {
+                game.State.Tick(game.enemies.FirstTankAt + 1.1f);
+                game.enemies.SendMessage("Update");
+                int armor = 0;
+                foreach (var tank in game.enemies.Tanks) if (tank.IsAlive) armor++;
+                Check(armor == (sector == 1 ? 0 : sector >= 5 ? 2 : 1), "Scheduled armor in sector " + sector);
+                game.support.SendMessage("Update");
+                Check(game.support.TargetActive && game.support.TargetKind ==
+                    (sector == 3 ? SupportKind.Drone : SupportKind.Reinforcements), "Opening support in sector " + sector);
+                if (sector >= 4)
+                {
+                    game.RestartRound();
+                    game.State.Tick(4.5f);
+                    game.enemies.SendMessage("Update");
+                    Check(game.enemies.ActiveCount == (sector >= 6 ? 2 : 1), "Counterattack wave in sector " + sector);
+                }
+                game.State.Tick(game.roundSeconds + 1);
+                game.NextStage();
+            }
+            game.ReturnToTitle();
         }
 
         private static void GrantSupport(SupportTargets support, SupportKind kind)

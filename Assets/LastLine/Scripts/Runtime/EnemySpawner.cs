@@ -91,27 +91,33 @@ namespace LastLine
         private void Update()
         {
             if (game == null || !game.IsRunning) return;
-            if (tanksEnabled && game.State.Elapsed >= nextTankAt)
+            if (game.CurrentStage >= 2 && tanksEnabled && game.State.Elapsed >= nextTankAt)
             {
                 float width = Mathf.Max(0, spawnHalfWidth - 1.1f);
-                SpawnTank(new Vector3(Random.Range(-width, width), 1, spawnZ));
+                bool column = game.CurrentStage >= 5;
+                float x = column ? width * Random.Range(0.55f, 1f) : Random.Range(-width, width);
+                SpawnTank(new Vector3(x, 1, spawnZ));
+                if (column) SpawnTank(new Vector3(-x, 1, spawnZ + 2f));
                 nextTankAt = game.State.Elapsed + Mathf.Max(1, tankInterval / difficulty.TankPressure);
             }
             // Short breaks in the opening sector let the player leave the firing lane for support.
-            if (game.CurrentStage == 1 && game.State.Elapsed % 8f >= 5f) return;
+            if (game.CurrentStage == 1 && game.State.Elapsed % 8f >= 6f) return;
             countdown -= Time.deltaTime;
             if (countdown > 0) return;
             // Carry frame overshoot to keep the rate accurate. At most one spawn per
             // frame prevents a large catch-up burst after a stall or a full pool.
             countdown = Mathf.Max(0, countdown + CurrentSpawnInterval);
             float lane;
-            if (game.CurrentStage == 3)
+            if (game.CurrentStage >= 4)
             {
                 float side = Mathf.FloorToInt(game.State.Elapsed / 5f) % 2 == 0 ? -1f : 1f;
                 lane = side * Random.Range(spawnHalfWidth * 0.25f, spawnHalfWidth);
             }
             else lane = Random.Range(-spawnHalfWidth, spawnHalfWidth);
             Spawn(new Vector3(lane, 1, spawnZ));
+            // A short counterattack from the quiet flank at the end of each five-second wave.
+            if (game.CurrentStage >= 6 && game.State.Elapsed % 5f >= 4f)
+                Spawn(new Vector3(-lane, 1, spawnZ));
         }
 
         public EnemyAgent Spawn(Vector3 position)

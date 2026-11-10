@@ -10,7 +10,7 @@ namespace LastLine
         public StageDifficulty(int stage)
         {
             int step = Math.Max(1, Math.Min(15, stage)) - 1;
-            SpawnPressure = 1 + step * 0.12f;
+            SpawnPressure = 1 + step * 0.20f;
             InfantrySpeed = 1 + step * 0.06f;
             TankPressure = 1 + step * 0.1f;
             TankSpeed = 1 + step * 0.04f;

@@ -134,14 +134,14 @@ namespace LastLine
             }
             else if (game.State.Elapsed >= nextTargetAt)
             {
-                // A fixed cycle makes all three rewards available in every round.
+                // The drone joins the reward cycle after the first armor mission.
                 // Place the reward across the field from the player so aiming for it is a choice.
                 float width = Mathf.Max(0, Mathf.Min(game.enemies.spawnHalfWidth - 0.8f, game.shooter.moveHalfWidth));
                 float side = Mathf.Abs(game.gun.transform.position.x) < 0.1f ? (Random.value < 0.5f ? -1 : 1)
                     : -Mathf.Sign(game.gun.transform.position.x);
                 float x = side * Random.Range(width * 0.6f, width);
                 SpawnTarget((SupportKind)nextKind, new Vector3(x, 1.1f, game.enemies.spawnZ));
-                nextKind = (nextKind + 1) % 3;
+                nextKind = (nextKind + 1) % (game.CurrentStage >= 3 ? 3 : 2);
                 nextTargetAt = game.State.Elapsed + Mathf.Max(1, targetInterval);
             }
             UpdateDrone();
@@ -311,10 +311,10 @@ namespace LastLine
             WeaponLevel = 1;
             queuedDrones = DroneStrikes = nextKind = 0;
             nextTargetAt = Mathf.Max(0, firstTargetSeconds);
-            if (game.CurrentStage == 2 && game.enemies.tanksEnabled)
+            if (game.CurrentStage == 3)
             {
                 nextKind = (int)SupportKind.Drone;
-                nextTargetAt = game.enemies.FirstTankAt + 1f;
+                if (game.enemies.tanksEnabled) nextTargetAt = game.enemies.FirstTankAt + 1f;
             }
             phase = StrikePhase.Idle;
             phaseTime = 0;

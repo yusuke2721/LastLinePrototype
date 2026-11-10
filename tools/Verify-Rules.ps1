@@ -110,7 +110,7 @@ namespace LastLine.Validation
             Check(stage4.InfantryArmor == 1 && stage4.TankArmor == 12, "Later stages increase infantry and tank durability");
             Check(new StageDifficulty(0).SpawnPressure == 1 && new StageDifficulty(int.MinValue).SpawnPressure == 1,
                 "Invalid stage numbers clamp safely");
-            Check(new StageDifficulty(int.MaxValue).TankArmor == 56 && new StageDifficulty(999).SpawnPressure < 3,
+            Check(new StageDifficulty(int.MaxValue).TankArmor == 56 && Math.Abs(new StageDifficulty(999).SpawnPressure - 3.8f) < 0.001f,
                 "Difficulty escalation has bounded safe limits");
             Check(CombatRules.SquadAfterBreach(5) == 3, "Five soldiers retain three after breach");
             Check(CombatRules.SquadAfterBreach(4) == 2, "Four soldiers retain two after breach");

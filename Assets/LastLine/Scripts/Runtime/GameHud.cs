@@ -146,7 +146,12 @@ namespace LastLine
             Fill(new Rect(218, 143, 282, 5), Border);
             Fill(new Rect(218, 143, 282 * Mathf.Clamp01(state.Elapsed / state.Duration), 5), Cyan);
             for (int i = 1; i < 3; i++) Fill(new Rect(218 + 94 * i, 141, 2, 9), Ink);
-            Label(new Rect(218, 156, 282, 20), "SURVIVE TO ZERO", small, Muted);
+            string briefing = game.CurrentStage switch
+            {
+                1 => "INFANTRY ASSAULT", 2 => "TANKS INBOUND", 3 => "DRONE SUPPORT ONLINE",
+                4 => "ALTERNATING FLANKS", 5 => "TWIN TANK COLUMNS", _ => "PINCER ASSAULT"
+            };
+            Label(new Rect(218, 156, 282, 20), briefing, small, Muted);
         }
 
         private void DrawDefense(RoundState state)
