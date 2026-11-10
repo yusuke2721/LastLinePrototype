@@ -236,7 +236,6 @@ namespace LastLine.Editor
                     game.State.Lives == game.startingLives && game.IsRunning, "Retry reset");
                 CheckSupport(game);
                 CheckBreachSquad(game);
-                CheckOverdrive(game);
                 game.State.Tick(game.roundSeconds + 1);
                 Check(game.State.IsVictory && !game.IsRunning, "60 second survival");
                 CheckCampaign(game);
@@ -254,33 +253,6 @@ namespace LastLine.Editor
                     EditorApplication.Exit(passed ? 0 : 1);
                 }
             }
-        }
-
-        private static void CheckOverdrive(GameController game)
-        {
-            game.RestartRound();
-            float normalRate = game.gun.EffectiveFireRate;
-            for (int i = 0; i < RoundState.OverdriveThreshold; i++)
-            {
-                var enemy = game.enemies.Spawn(new Vector3(0, 1, 12));
-                enemy.TakeDamage(999);
-                enemy.TakeDamage(999);
-            }
-            Check(game.State.Combo == 8 && game.State.IsOverdrive && game.State.Score ==
-                game.enemies.prefab.scoreValue * 14, "Real kills build combo, multiply rewards, and reject duplicate damage");
-            Check(Mathf.Approximately(game.gun.EffectiveFireRate, normalRate * 2), "Overdrive doubles actual weapon fire rate");
-            game.support.RestoreLoadout(SupportTargets.MaxAllies, SupportTargets.MaxWeaponLevel);
-            Check(Mathf.Approximately(game.gun.EffectiveFireRate, game.gun.shotsPerSecond * 1.3f * 2),
-                "Overdrive stacks with maximum weapon upgrade");
-            game.gun.SendMessage("Fire");
-            Check(game.gun.ActiveBulletCount == SupportTargets.MaxAllies + 1, "Boosted squad fires a complete volley");
-            game.EnemyBreached();
-            Check(game.State.Combo == 0 && !game.State.IsOverdrive && game.State.BestCombo == 8 &&
-                Mathf.Approximately(game.gun.EffectiveFireRate, game.gun.shotsPerSecond * 1.3f),
-                "Real breach cancels boosted rate while retaining weapon upgrade");
-            game.RestartRound();
-            Check(game.State.BestCombo == 0 && game.State.Combo == 0 && game.gun.ActiveBulletCount == 0 &&
-                Mathf.Approximately(game.gun.EffectiveFireRate, normalRate), "Retry clears combo, boost, and bullets");
         }
 
         private static void CheckSupport(GameController game)

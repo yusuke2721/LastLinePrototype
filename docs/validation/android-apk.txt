@@ -35,20 +35,3 @@ apksigner verify: PASS v2, same certificate as 0.1.0.
 zipalign -c -P 16 4: PASS.
 ABI: arm64-v8a; min SDK 26; target SDK 36; same package identifier.
 NOT RUN: corrected APK installation, touch input and gameplay on Android device (adb devices list empty).
-
-Android 0.1.10 / Combo and Overdrive (2026-11-10)
-Build: succeeded, Unity exit code 0
-Release project Edit Mode: PASS (13 checks)
-Release project Play Mode: PASS
-Source consistency: all 16 C# SHA256 hashes match repository
-Build output SHA256 matches copied APK
-PASS: APK v2 signature
-PASS: Same signing certificate as 0.1.9
-PASS: zipalign -c -P 16 4
-package: name='com.yusuke2721.lastline' versionCode='11' versionName='0.1.10' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
-sdkVersion:'26'
-targetSdkVersion:'36'
-native-code: 'arm64-v8a'
-SHA256: 8394537624eadb9decbcd08a41c6ae0d5528074bb7bb088f03e270544f687c9c Bytes: 30073847
-NOT RUN: Android device installation, gameplay, HUD rendering, performance and difficulty.
-Raw logs: Builds/Android/PrototypeChecks.RunBatchChecks-0.1.10.log and AndroidApkBuilder.BuildFromCommandLine-0.1.10.log

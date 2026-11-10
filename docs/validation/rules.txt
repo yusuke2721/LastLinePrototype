@@ -11,25 +11,6 @@ PASS: 60 FPS simulated round reaches victory
 PASS: Fresh round resets state
 PASS: Invalid lives rejected
 PASS: Invalid duration rejected
-PASS: Combo starts empty with normal fire rate
-PASS: Non-positive rewards cannot build combo
-PASS: First three kills retain base score
-PASS: Fourth chained kill doubles score and refreshes window
-PASS: Chain survives just before timeout
-PASS: Timeout resets chain but preserves best combo
-PASS: Exact window boundary expires chain
-PASS: Seven kills do not activate overdrive
-PASS: Eighth kill activates double fire and triple score immediately
-PASS: Overdrive survives ordinary combo timeout
-PASS: Kills during overdrive count without extending duration
-PASS: Exact overdrive expiry restores normal fire and empty chain
-PASS: A new chain can reactivate overdrive
-PASS: Breach cancels overdrive and keeps best combo
-PASS: Invalid deltas cannot corrupt combo timers
-PASS: Breach resets ordinary chain
-PASS: Victory freezes combo and score
-PASS: Fatal breach ends boost and rejects subsequent kills
-PASS: Fresh round clears best combo and boost
 PASS: High speed sweep finds first contact
 PASS: Lateral miss
 PASS: Tangent contact
@@ -66,17 +47,4 @@ PASS: Zero delta does not move shooter
 PASS: Zero speed does not move shooter
 PASS: Zero movement width locks to center
 PASS: Shooter movement is frame-rate independent
-PASS: Stage one preserves scene tuning
-PASS: Next stage increases infantry pressure and speed
-PASS: Next stage strengthens and accelerates armor
-PASS: Later stages increase infantry and tank durability
-PASS: Invalid stage numbers clamp safely
-PASS: Difficulty escalation has bounded safe limits
-PASS: Five soldiers retain three after breach
-PASS: Four soldiers retain two after breach
-PASS: Odd squad halves round up
-PASS: Two soldiers retain the player
-PASS: Last soldier is never removed by halving
-PASS: Invalid squad count keeps a controllable player
-PASS: Halving cannot overflow
-PASS: 81 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.
+PASS: 49 assertions; actual CombatRules.cs compiled with Add-Type. Unity was not used.

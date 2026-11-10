@@ -65,7 +65,6 @@ namespace LastLine
                     if (game.IsRunning) DrawTankHealth();
                     if (game.IsRunning) DrawSupport();
                     DrawHeader(state);
-                    if (game.IsRunning) DrawCombo(state);
                     DrawDefense(state);
                     if (!state.IsRunning) DrawResult(state);
                 }
@@ -173,23 +172,6 @@ namespace LastLine
             Label(new Rect(38, 895, 464, 25), state.IsRunning ? ControlHint() : "ROUND COMPLETE", centered, Muted);
         }
 
-        private void DrawCombo(RoundState state)
-        {
-            Color accent = state.IsOverdrive ? Amber : Cyan;
-            Panel(new Rect(20, 236, 500, 51));
-            string status = state.IsOverdrive
-                ? $"OVERDRIVE / FIRE x2 / {state.OverdriveRemaining:0.0}s"
-                : state.Combo == 0 ? "CHAIN KILLS WITHIN 4s TO BUILD OVERDRIVE"
-                : $"COMBO {state.Combo}/{RoundState.OverdriveThreshold} / SCORE x{state.ScoreMultiplier}";
-            Label(new Rect(30, 239, 480, 24), status, centered, accent);
-            float progress = state.IsOverdrive ? state.OverdriveRemaining / RoundState.OverdriveDuration
-                : state.Combo / (float)RoundState.OverdriveThreshold;
-            Fill(new Rect(32, 270, 476, 5), Border);
-            Fill(new Rect(32, 270, 476 * Mathf.Clamp01(progress), 5), accent);
-            if (!state.IsOverdrive && state.Combo > 0)
-                Fill(new Rect(32, 280, 476 * state.ComboRemaining / RoundState.ComboWindow, 2), Muted);
-        }
-
         private string ControlHint()
         {
             var support = game.support;
@@ -217,7 +199,6 @@ namespace LastLine
             Label(new Rect(288, 456, 180, 18), "OPERATION TOTAL", centered, Muted);
             Label(new Rect(72, 482, 180, 42), state.Score.ToString("D5"), resultNumber, White);
             Label(new Rect(288, 482, 180, 42), game.CampaignScore.ToString("D5"), resultNumber, White);
-            Label(new Rect(64, 520, 412, 20), $"BEST COMBO / {state.BestCombo}", centered, Amber);
             Label(new Rect(64, 541, 412, 26), state.IsVictory ? $"NEXT SECTOR / SQUAD {game.NextAllies + 1} / WEAPON LV.{game.NextWeapon}"
                 : $"TIME HELD / {state.Elapsed:0.0} SECONDS", centered, Muted);
             if (Action(new Rect(72, 589, 396, 64), state.IsVictory ? $"DEPLOY TO STAGE {game.CurrentStage + 1:00}   >" : "RETRY SECTOR   >", true))

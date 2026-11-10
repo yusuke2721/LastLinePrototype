@@ -1,4 +1,2 @@
-PASS: Assembly-CSharp compiled against the Unity project references (13 LastLine files)
-D:\GitHub\yusuke2721\LastLinePrototype\Assets\LastLine\Scripts\Editor\AndroidApkBuilder.cs(101,38): warning UAC0005: AppDomain.GetAssemblies() in Unity may return already unloaded assemblies and result in errors or leaks. Use Unity APIs instead, such as 'CurrentAssemblies.GetLoadedAssemblies()' or 'TypeCache.GetTypesDerivedFrom()'.
-PASS: Assembly-CSharp-Editor compiled against the Unity project references (3 LastLine files)
-Temporary compiler outputs: C:\Users\yusuke\AppData\Local\Packages\sandbox.{490aeeb4-63fe-403d-920e-6899eba156ee}\AC\Temp\LastLine-Compile-6c2ce39a10c247b3a49f495ab7145e1c
+PASS: Assembly-CSharp compiled against the Unity project references (11 LastLine files)
+PASS: Assembly-CSharp-Editor compiled against the Unity project references (2 LastLine files)
