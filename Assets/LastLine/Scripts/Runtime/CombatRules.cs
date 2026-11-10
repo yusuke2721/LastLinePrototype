@@ -28,6 +28,15 @@ namespace LastLine
         public float Duration { get; }
         public bool IsRunning { get; private set; } = true;
         public bool IsVictory { get; private set; }
+        public const float ComboWindow = 4f, OverdriveDuration = 6f;
+        public const int OverdriveThreshold = 8;
+        public int Combo { get; private set; }
+        public int BestCombo { get; private set; }
+        public float ComboRemaining { get; private set; }
+        public float OverdriveRemaining { get; private set; }
+        public bool IsOverdrive => OverdriveRemaining > 0;
+        public int ScoreMultiplier => IsOverdrive ? 3 : Combo >= 4 ? 2 : 1;
+        public float FireRateMultiplier => IsRunning && IsOverdrive ? 2f : 1f;
 
         public RoundState(int lives, float duration)
         {
@@ -41,19 +50,43 @@ namespace LastLine
         {
             if (!IsRunning || delta <= 0 || float.IsNaN(delta) || float.IsInfinity(delta)) return;
             Elapsed = Math.Min(Duration, Elapsed + delta);
+            if (IsOverdrive)
+            {
+                OverdriveRemaining = Math.Max(0, OverdriveRemaining - delta);
+                // An activation has a fixed duration; kills cannot extend it.
+                if (!IsOverdrive) ResetCombo();
+            }
+            else
+            {
+                ComboRemaining = Math.Max(0, ComboRemaining - delta);
+                if (ComboRemaining == 0) Combo = 0;
+            }
             if (Elapsed >= Duration) { IsRunning = false; IsVictory = true; }
         }
 
         public void Breach()
         {
             if (!IsRunning) return;
+            ResetCombo();
             Lives--;
             if (Lives == 0) IsRunning = false;
         }
 
         public void AwardKill(int points)
         {
-            if (IsRunning && points > 0) Score += points;
+            if (!IsRunning || points <= 0) return;
+            Combo++;
+            BestCombo = Math.Max(BestCombo, Combo);
+            ComboRemaining = ComboWindow;
+            if (!IsOverdrive && Combo >= OverdriveThreshold)
+                OverdriveRemaining = OverdriveDuration;
+            Score += points * ScoreMultiplier;
+        }
+
+        private void ResetCombo()
+        {
+            Combo = 0;
+            ComboRemaining = OverdriveRemaining = 0;
         }
     }
 

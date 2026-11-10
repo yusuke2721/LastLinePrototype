@@ -48,6 +48,63 @@ namespace LastLine.Validation
             try { new RoundState(3, float.NaN); } catch (System.ArgumentOutOfRangeException) { rejected = true; }
             Check(rejected, "Invalid duration rejected");
 
+            round = new RoundState(3, 60);
+            Check(round.Combo == 0 && round.BestCombo == 0 && round.FireRateMultiplier == 1,
+                "Combo starts empty with normal fire rate");
+            round.AwardKill(0); round.AwardKill(-1);
+            Check(round.Combo == 0, "Non-positive rewards cannot build combo");
+            for (int i = 0; i < 3; i++) round.AwardKill(10);
+            Check(round.Combo == 3 && round.Score == 30 && round.ScoreMultiplier == 1,
+                "First three kills retain base score");
+            round.Tick(3.5f); round.AwardKill(10);
+            Check(round.Combo == 4 && round.Score == 50 && round.ScoreMultiplier == 2 && round.ComboRemaining == 4,
+                "Fourth chained kill doubles score and refreshes window");
+            round.Tick(3.99f);
+            Check(round.Combo == 4, "Chain survives just before timeout");
+            round.Tick(0.02f);
+            Check(round.Combo == 0 && round.BestCombo == 4 && round.ScoreMultiplier == 1,
+                "Timeout resets chain but preserves best combo");
+            round.AwardKill(10); round.Tick(4);
+            Check(round.Combo == 0, "Exact window boundary expires chain");
+            for (int i = 0; i < 7; i++) round.AwardKill(10);
+            Check(!round.IsOverdrive && round.Combo == 7, "Seven kills do not activate overdrive");
+            int beforeActivation = round.Score;
+            round.AwardKill(10);
+            Check(round.IsOverdrive && round.OverdriveRemaining == 6 && round.FireRateMultiplier == 2 &&
+                round.Score == beforeActivation + 30, "Eighth kill activates double fire and triple score immediately");
+            round.Tick(4.5f);
+            Check(round.IsOverdrive && round.Combo == 8 && round.OverdriveRemaining == 1.5f,
+                "Overdrive survives ordinary combo timeout");
+            round.AwardKill(10);
+            Check(round.Combo == 9 && round.BestCombo == 9 && round.OverdriveRemaining == 1.5f,
+                "Kills during overdrive count without extending duration");
+            round.Tick(1.5f);
+            Check(!round.IsOverdrive && round.Combo == 0 && round.ComboRemaining == 0 && round.FireRateMultiplier == 1,
+                "Exact overdrive expiry restores normal fire and empty chain");
+            for (int i = 0; i < 8; i++) round.AwardKill(10);
+            Check(round.IsOverdrive, "A new chain can reactivate overdrive");
+            round.Breach();
+            Check(!round.IsOverdrive && round.Combo == 0 && round.BestCombo == 9 && round.Lives == 2,
+                "Breach cancels overdrive and keeps best combo");
+            round.AwardKill(10); round.Tick(-1); round.Tick(float.NaN); round.Tick(float.PositiveInfinity);
+            Check(round.Combo == 1 && round.ComboRemaining == 4, "Invalid deltas cannot corrupt combo timers");
+            round.Breach();
+            Check(round.Combo == 0 && round.ComboRemaining == 0, "Breach resets ordinary chain");
+            for (int i = 0; i < 8; i++) round.AwardKill(10);
+            round.Tick(99);
+            int finalCombo = round.Combo, finalScore = round.Score;
+            round.AwardKill(10); round.Breach(); round.Tick(1);
+            Check(round.IsVictory && round.Combo == finalCombo && round.Score == finalScore && round.BestCombo == 9,
+                "Victory freezes combo and score");
+            round = new RoundState(1, 60);
+            for (int i = 0; i < 8; i++) round.AwardKill(10);
+            round.Breach(); round.AwardKill(10);
+            Check(!round.IsRunning && !round.IsOverdrive && round.Combo == 0 && round.BestCombo == 8 && round.FireRateMultiplier == 1,
+                "Fatal breach ends boost and rejects subsequent kills");
+            round = new RoundState(3, 60);
+            Check(round.BestCombo == 0 && round.Combo == 0 && !round.IsOverdrive,
+                "Fresh round clears best combo and boost");
+
             float t;
             Check(CombatRules.SegmentCircle(0, 0, 0, 40, 0, 20, 1, out t) && System.Math.Abs(t - 0.475f) < 0.00001f, "High speed sweep finds first contact");
             Check(!CombatRules.SegmentCircle(0, 0, 0, 40, 3, 20, 1, out t), "Lateral miss");

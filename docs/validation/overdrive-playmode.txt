@@ -1,0 +1,10 @@
+Unity 6000.6.8f1 / 2026-11-10
+Isolated source project: Builds/Validation/Overdrive-e19febc6a9e540efbd3eb7c51ec7fa42
+Command: Unity.exe -batchmode -nographics -projectPath <isolated project> -executeMethod LastLine.Editor.OverdriveValidation.Run -logFile <project>/playmode.log
+Bootstrap: set validation-only company/product, MinimalSceneBuilder.Create(), PrototypeChecks.RunBatchChecks().
+External package dependencies excluded; built-in Unity modules only.
+Unity exit code: 0
+
+Last Line scene created: Assets/LastLine/Generated/Minimal/LastLine.unity. Set Game view to 9:16, then press Play.
+Last Line Edit Mode checks: PASS (13 checks).
+Last Line Play Mode checks: PASS. Exiting Play Mode.

@@ -1,3 +1,22 @@
+# Android 0.1.10 Release用ビルド（2026-11-10）
+
+- 既存の隔離ビルドプロジェクトへ現ソースをコピーし、全16 C#ファイルのSHA-256一致を確認。生成済みシーンでEdit Mode 13チェックとPlay Mode全体がPASS、Android APKビルドも終了コード0でした。開いているUnity作業プロジェクトは変更していません。
+- `LastLine-0.1.10-arm64.apk` は30,073,847バイト、バージョンコード11。v2署名、0.1.9との署名証明書一致、16KB zipalign、パッケージ名、min SDK 26 / target SDK 36、ARM64のみを確認。ビルド元とコピー後のAPKのSHA-256は一致しています。詳細は `validation/android-apk.txt`。
+- 配布先は [Release v0.1.10](https://github.com/yusuke2721/LastLinePrototype/releases/tag/v0.1.10)。APKとSHA-256ファイルを添付するテスト版です。実機での更新・タッチ・HUD描画・性能・難易度は未確認です。
+
+---
+
+# コンボとオーバードライブ（2026-11-10）
+
+- 純C#の81項目に成功（従来62 + コンボ19）。4体目の得点2倍、8体目の即時発動と得点3倍、通常4秒・発動6秒の境界、発動中に延長しないこと、再発動、突破で解除、最高記録の保持、無効時間、終了後の停止、新規ラウンドの初期化を確認しました。`validation/rules.txt`。
+- 全16 C#ファイルの3入力条件での構文検査と、Unity 6000.6.8f1の参照によるRuntime / Editor独立コンパイルが成功しました。既存のAndroidApkBuilderにUAC0005警告（AppDomain.GetAssemblies）が1件あります。`validation/syntax.txt`、`validation/unity-compile.txt`。
+- `Builds/Validation/Overdrive-e19febc6a9e540efbd3eb7c51ec7fa42` に隔離Unityプロジェクトを作り、現ソース・組み込みモジュール・新規生成シーンで `PrototypeChecks.RunBatchChecks` を実行。Edit Mode 13チェックとPlay Mode全体がPASS、Unity終了コード0でした。既存のUnity作業プロジェクトへのコピーは行っていません。
+- Play検証に、実敵8体の撃破と重複ダメージでコンボ8・得点14体分になること、実効連射速度2倍、最大武器との重ね掛け、最大編成の5発斉射、突破で通常連射へ戻ること、再試行でコンボ・最高記録・弾が消えることを追加しました。既存の支援・突破・キャンペーン・ステージ攻撃チェックも成功しました。抜粋は `validation/overdrive-playmode.txt`。
+- サンドボックス内でのUnity起動はWMI・ライセンス初期化中に終了したため、隔離プロジェクトをサンドボックス外で実行しました。`-batchmode -nographics` の検証で、HUDの実描画・入力・Android実機性能・8連続撃破の難易度は未検証です。APKは再ビルドしていません。
+- 再現：Unityへ変更ソースを取り込み、生成済みシーンで **Last Line > Run Play Mode Checks**。CLIでは `Unity.exe -batchmode -nographics -projectPath <検証用Unityプロジェクト> -executeMethod LastLine.Editor.PrototypeChecks.RunBatchChecks -logFile <ログのパス>`（非同期Play検証のため `-quit` は付けません）。仕様と反映対象は [UI.md](UI.md) を参照してください。
+
+---
+
 # Android APKの作成（2026-11-08）
 
 - Unity 6000.6.8f1のAndroid対応を追加し、SDK 36 / Build Tools 36・NDK r27c・OpenJDK 17・CMake 3.22.1を外部ツールとして設定。Hubの昇格処理が進まなかったため、Unity署名を確認した公式インストーラーからAndroid本体を導入しました。

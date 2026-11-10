@@ -1,4 +1,4 @@
-PASS: C# syntax, 13 files, symbols=UNITY_EDITOR,ENABLE_INPUT_SYSTEM
-PASS: C# syntax, 13 files, symbols=UNITY_EDITOR,ENABLE_LEGACY_INPUT_MANAGER
-PASS: C# syntax, 13 files, symbols=UNITY_EDITOR,ENABLE_INPUT_SYSTEM,ENABLE_LEGACY_INPUT_MANAGER
+PASS: C# syntax, 16 files, symbols=UNITY_EDITOR,ENABLE_INPUT_SYSTEM
+PASS: C# syntax, 16 files, symbols=UNITY_EDITOR,ENABLE_LEGACY_INPUT_MANAGER
+PASS: C# syntax, 16 files, symbols=UNITY_EDITOR,ENABLE_INPUT_SYSTEM,ENABLE_LEGACY_INPUT_MANAGER
 Unity API references, rendering, and Player builds still require Unity Editor.

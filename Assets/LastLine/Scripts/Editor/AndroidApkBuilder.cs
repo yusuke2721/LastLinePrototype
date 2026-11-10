@@ -12,8 +12,8 @@ namespace LastLine.Editor
     // Direct-install test APK, signed with Unity's local debug keystore.
     public static class AndroidApkBuilder
     {
-        private const string Version = "0.1.9";
-        private const int VersionCode = 10;
+        private const string Version = "0.1.10";
+        private const int VersionCode = 11;
         private const string Identifier = "com.yusuke2721.lastline";
 
         [MenuItem("Last Line/Build Android Test APK", false, 31)]
